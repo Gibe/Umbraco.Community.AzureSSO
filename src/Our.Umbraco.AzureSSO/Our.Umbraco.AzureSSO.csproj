@@ -1,0 +1,11 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net7.0</TargetFrameworks>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Identity.Web.MicrosoftGraph" Version="1.25.10" />
+		<PackageReference Include="Umbraco.Cms.Core" Version="11.0.0" />
+		<PackageReference Include="Umbraco.Cms.Web.BackOffice" Version="11.0.0" />
+	</ItemGroup>
+</Project>
