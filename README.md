@@ -22,3 +22,11 @@ Uses autolinking to create user accounts in Umbraco and then associate them with
     }
 },
 ```
+
+DisplayName - The display name for use on the login button
+DenyLocalLogin - Allow users to login via Umbraco's standard login
+GroupBindings - The bindings for AD group to Umbraco group
+
+TODO Instructions on configuring App Registration in Azure
+
+
