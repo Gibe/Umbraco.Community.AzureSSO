@@ -4,6 +4,22 @@ Add Azure AD SSO to Umbraco v11+ sites. This will allow you to automatically cre
 To install
 `dotnet add package Our.Umbraco.AzureSSO`
 
+In startup.cs under ConfigureServices add:
+
+`.AddMicrosoftAccountAuthentication(_config)`
+
+In the services.AddUmbraco bindings
+
+For example:
+```
+var builder = services.AddUmbraco(_env, _config)
+    .AddBackOffice()
+	.AddWebsite()
+	.AddComposers()
+	.AddMicrosoftAccountAuthentication(_config)
+	.AddAzureBlobMediaFileSystem();
+```
+
 To configure add the following section to the root of your appsettings.json file and customise as appropriate
 ```
 "AzureSSO": {
