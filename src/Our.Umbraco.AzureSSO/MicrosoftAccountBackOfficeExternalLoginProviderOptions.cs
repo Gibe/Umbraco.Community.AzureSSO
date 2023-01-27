@@ -1,6 +1,8 @@
-﻿using System.Linq;
+using System.Linq;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
+using Microsoft.Identity.Web;
 using Our.Umbraco.AzureSSO.Settings;
 using Umbraco.Cms.Core.Security;
 using Umbraco.Cms.Web.BackOffice.Security;
@@ -89,10 +91,17 @@ namespace Our.Umbraco.AzureSSO
 
 			if (loginInfo.Principal?.Identity?.Name != null)
 			{
-				user.Name = loginInfo.Principal.Identity.Name;
+				user.Name = DisplayName(loginInfo.Principal, defaultValue: loginInfo.Principal.Identity.Name);
 				user.UserName = loginInfo.Principal.Identity.Name;
 			}
 			user.IsApproved = true;
+		}
+
+		private string DisplayName(ClaimsPrincipal claimsPrincipal, string defaultValue)
+		{
+			var displayName = claimsPrincipal.GetDisplayName();
+
+			return !string.IsNullOrWhiteSpace(displayName) ? displayName: defaultValue;
 		}
 	}
 }
