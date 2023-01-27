@@ -6,17 +6,17 @@ To install
 
 In startup.cs under ConfigureServices add:
 
-`.AddMicrosoftAccountAuthentication(_config)`
+`.AddMicrosoftAccountAuthentication()`
 
 In the services.AddUmbraco bindings
 
 For example:
 ```
 var builder = services.AddUmbraco(_env, _config)
-    .AddBackOffice()
+	.AddBackOffice()
 	.AddWebsite()
 	.AddComposers()
-	.AddMicrosoftAccountAuthentication(_config)
+	.AddMicrosoftAccountAuthentication()
 	.AddAzureBlobMediaFileSystem();
 ```
 

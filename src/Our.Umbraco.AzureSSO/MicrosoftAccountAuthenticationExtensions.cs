@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Extensions.Configuration;
@@ -12,10 +12,10 @@ namespace Our.Umbraco.AzureSSO
 {
 	public static class MicrosoftAccountAuthenticationExtensions
 	{
-		public static IUmbracoBuilder AddMicrosoftAccountAuthentication(this IUmbracoBuilder builder, IConfiguration configuration)
+		public static IUmbracoBuilder AddMicrosoftAccountAuthentication(this IUmbracoBuilder builder)
 		{
 			var azureSsoConfiguration = new AzureSSOConfiguration();
-			configuration.Bind("AzureSSO", azureSsoConfiguration);
+			builder.Config.Bind("AzureSSO", azureSsoConfiguration);
 
 			builder.Services.AddSingleton<AzureSsoSettings>(conf => new AzureSsoSettings(azureSsoConfiguration));
 			builder.Services.ConfigureOptions<MicrosoftAccountBackOfficeExternalLoginProviderOptions>();
@@ -28,14 +28,14 @@ namespace Our.Umbraco.AzureSSO
 					{
 						backOfficeAuthenticationBuilder.AddMicrosoftIdentityWebApp(options =>
 								{
-									configuration.Bind("AzureSSO:Credentials", options);
+									builder.Config.Bind("AzureSSO:Credentials", options);
 									options.SignInScheme = backOfficeAuthenticationBuilder.SchemeForBackOffice(MicrosoftAccountBackOfficeExternalLoginProviderOptions.SchemeName);
 									options.Events = new OpenIdConnectEvents();
 								},
-								options => { configuration.Bind("AzureSSO:Credentials", options); },
+								options => { builder.Config.Bind("AzureSSO:Credentials", options); },
 								displayName: azureSsoConfiguration.DisplayName ?? "Azure Active Directory",
 								openIdConnectScheme: backOfficeAuthenticationBuilder.SchemeForBackOffice(MicrosoftAccountBackOfficeExternalLoginProviderOptions.SchemeName) ?? String.Empty)
-							.EnableTokenAcquisitionToCallDownstreamApi(options => configuration.Bind("AzureSSO:Credentials", options), initialScopes)
+							.EnableTokenAcquisitionToCallDownstreamApi(options => builder.Config.Bind("AzureSSO:Credentials", options), initialScopes)
 							.AddInMemoryTokenCaches();
 
 
