@@ -99,7 +99,7 @@ namespace Our.Umbraco.AzureSSO
 
 		private string DisplayName(ClaimsPrincipal claimsPrincipal, string defaultValue)
 		{
-			var displayName = claimsPrincipal.GetDisplayName();
+			var displayName = claimsPrincipal.FindFirstValue("name");
 
 			return !string.IsNullOrWhiteSpace(displayName) ? displayName: defaultValue;
 		}
