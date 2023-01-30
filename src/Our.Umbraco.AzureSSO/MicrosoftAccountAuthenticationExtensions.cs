@@ -3,11 +3,11 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Identity.Web;
+using Our.Umbraco.AzureSSO;
 using Our.Umbraco.AzureSSO.Settings;
-using Umbraco.Cms.Core.DependencyInjection;
 using Umbraco.Extensions;
 
-namespace Our.Umbraco.AzureSSO
+namespace Umbraco.Cms.Core.DependencyInjection
 {
 	public static class MicrosoftAccountAuthenticationExtensions
 	{
@@ -18,7 +18,7 @@ namespace Our.Umbraco.AzureSSO
 
 			builder.Services.AddSingleton<AzureSsoSettings>(conf => new AzureSsoSettings(azureSsoConfiguration));
 			builder.Services.ConfigureOptions<MicrosoftAccountBackOfficeExternalLoginProviderOptions>();
-			
+
 			var initialScopes = new string[] { };
 			builder.AddBackOfficeExternalLogins(logins =>
 			{
