@@ -3,11 +3,11 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.Identity.Web;
-using Our.Umbraco.AzureSSO.Settings;
 using Umbraco.Cms.Core.Security;
 using Umbraco.Cms.Web.BackOffice.Security;
+using Umbraco.Community.AzureSSO.Settings;
 
-namespace Our.Umbraco.AzureSSO
+namespace Umbraco.Community.AzureSSO
 {
 	public class MicrosoftAccountBackOfficeExternalLoginProviderOptions : IConfigureNamedOptions<BackOfficeExternalLoginProviderOptions>
 	{

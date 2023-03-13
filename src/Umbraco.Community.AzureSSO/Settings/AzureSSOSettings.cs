@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
-namespace Our.Umbraco.AzureSSO.Settings
+namespace Umbraco.Community.AzureSSO.Settings
 {
 	public class AzureSsoSettings
 	{

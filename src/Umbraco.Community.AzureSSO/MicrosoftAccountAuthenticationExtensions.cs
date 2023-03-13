@@ -1,14 +1,14 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Identity.Web;
-using Our.Umbraco.AzureSSO.Settings;
 using Umbraco.Cms.Core.DependencyInjection;
+using Umbraco.Community.AzureSSO.Settings;
 using Umbraco.Extensions;
 
-namespace Our.Umbraco.AzureSSO
+namespace Umbraco.Community.AzureSSO
 {
 	public static class MicrosoftAccountAuthenticationExtensions
 	{
