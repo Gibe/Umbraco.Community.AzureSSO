@@ -1,8 +1,8 @@
-# Our.Umbraco.AzureSSO
+# Umbraco.Community.AzureSSO
 Add Azure AD SSO to Umbraco v11+ sites. This will allow you to automatically create Umbraco user accounts for users in your AD. This will then associate the Umbraco users with groups based on their AD group, and the configuration below.
 
 To install
-`dotnet add package Our.Umbraco.AzureSSO`
+`dotnet add package Umbraco.Community.AzureSSO`
 
 In startup.cs under ConfigureServices add:
 
