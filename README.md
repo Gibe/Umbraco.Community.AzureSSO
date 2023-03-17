@@ -40,6 +40,13 @@ To configure add the following section to the root of your appsettings.json file
     }
 },
 ```
+| Setting          | Description                                           |
+| ---------------- | ----------------------------------------------------- |
+| Domain           |                                                       |
+| TenantId         |                                                       |
+| ClientId         |                                                       |
+| ClientSecret     |                                                       |
+
 TODO Instructions on configuring App Registration in Azure and populating the credentials section
 
 | Setting          | Description                                           |
