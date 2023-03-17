@@ -42,9 +42,11 @@ To configure add the following section to the root of your appsettings.json file
 ```
 TODO Instructions on configuring App Registration in Azure and populating the credentials section
 
-DisplayName - The display name for use on the login button
-DenyLocalLogin - Allow users to login via Umbraco's standard login
-GroupBindings - The bindings for AD group to Umbraco group
+| Setting          | Description                                           |
+| ---------------- | ----------------------------------------------------- |
+| DisplayName      | The display name for use on the login button          |
+| DenyLocalLogin   | Allow users to login via Umbraco's standard login     |
+| GroupBindings    | The bindings for AD group to Umbraco group            |
 
 
 
