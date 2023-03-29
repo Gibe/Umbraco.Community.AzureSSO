@@ -14,7 +14,7 @@ Within that application registration select Authentication and ensure Access Tok
 
 ![Authentication section within the App Registration](https://user-images.githubusercontent.com/113788/228667598-4f8243c6-5197-49c0-b909-ca61782e7d03.png)
 
-Then under Certificates and Secrets select + New client secret and create a new secret. Copy the value of the new secret and save that for inserting into the appSettings.json later.
+Then under Certificates and Secrets select + New client secret and create a new secret. Copy the value of the new secret and save that for inserting into the appSettings.json later. This will go into the value for `ClientSecret`
 
 Under Token configuration, select Add optional claimm then select ID and check email, when it asks agree to the permissions request
 
