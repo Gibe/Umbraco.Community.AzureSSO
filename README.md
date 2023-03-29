@@ -1,6 +1,8 @@
 # Umbraco.Community.AzureSSO
 Add Azure AD SSO to Umbraco v11+ sites. This will allow you to automatically create Umbraco user accounts for users in your AD. This will then associate the Umbraco users with groups based on their AD group, and the configuration below.
 
+First you, or an Azure AD administration will need to create an App Registration in the Azure Portal which will be used to authenticate the site against Azure AD. Follow [these instructions to setup the new App Registration](AzureADSetup.md)
+
 To install
 `dotnet add package Umbraco.Community.AzureSSO`
 
@@ -40,14 +42,17 @@ To configure add the following section to the root of your appsettings.json file
     }
 },
 ```
-| Setting          | Description                                           |
-| ---------------- | ----------------------------------------------------- |
-| Domain           |                                                       |
-| TenantId         |                                                       |
-| ClientId         |                                                       |
-| ClientSecret     |                                                       |
 
-TODO Instructions on configuring App Registration in Azure and populating the credentials section
+You'll need to configure these settings based on the values in Azure:
+
+| Setting          | Description                                                           |
+| ---------------- | -----------------------------------------------------                 |
+| Domain           | The value in Primary domain in the Azure Active Directory Overview    |
+| TenantId         | The value in Directory (tenant) ID on the app registration Overview   |
+| ClientId         | The value in Application (Client) ID on the app registration Overview |
+| ClientSecret     | The client secret created for the app registration                    |
+
+You can also customise the configuration by setting these settings:
 
 | Setting          | Description                                           |
 | ---------------- | ----------------------------------------------------- |
@@ -55,6 +60,9 @@ TODO Instructions on configuring App Registration in Azure and populating the cr
 | DenyLocalLogin   | Allow users to login via Umbraco's standard login     |
 | GroupBindings    | The bindings for AD group to Umbraco group            |
 
+## Group Bindings
+
+To bind these you'll need to specify the active directory group and then the matching Umbraco group, for example we use: `"GIBE\Producers" : "editors"` to bind everyone in the producers group to the Umbraco editors group. Beware these will be reset on each login, so changing groups in umbraco will only take effect until the user next logs in. If a user is removed from an AD group they'll automatically be removed from the matching Umbraco group on next login.
 
 
 
