@@ -63,7 +63,10 @@ You can also customise the configuration by setting these settings:
 ## Group Bindings
 
 To bind these you'll need to specify the active directory group and then the matching Umbraco group.
-For example we use: `"GIBE\Producers" : "editors"` to bind everyone in the producers group to the Umbraco editors group. Beware these will be reset on each login, so changing groups in umbraco will only take effect until the user next logs in. If a user is removed from an AD group they'll automatically be removed from the matching Umbraco group on next login.
+
+For example we use: `"GIBE\Producers" : "editors"` to bind everyone in the producers group to the Umbraco editors group. 
+
+Beware these will be reset on each login, so changing groups in umbraco will only take effect until the user next logs in. If a user is removed from an AD group they'll automatically be removed from the matching Umbraco group on next login.
 
 
 
