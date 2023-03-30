@@ -3,7 +3,7 @@
 	"AuthorDetails": {
 		"Name": "Steve Temple | Gibe Digital",
 		"Url": "https://github.com/Gibe/Umbraco.Community.AzureSSO",
-		"ImageUrl": "",
+		"ImageUrl": "https://raw.githubusercontent.com/Gibe/Umbraco.Community.AzureSSO/main/AzureSSO.jpg",
 		"SyncContributorsFromRepository": true
 	},
 	"DocumentationUrl": "https://github.com/Gibe/Umbraco.Community.AzureSSO",
