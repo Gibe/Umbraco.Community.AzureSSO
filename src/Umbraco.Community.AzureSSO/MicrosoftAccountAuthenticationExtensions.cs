@@ -1,14 +1,13 @@
 using System;
-using System.Collections.Generic;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Identity.Web;
-using Umbraco.Cms.Core.DependencyInjection;
+using Umbraco.Community.AzureSSO;
 using Umbraco.Community.AzureSSO.Settings;
 using Umbraco.Extensions;
 
-namespace Umbraco.Community.AzureSSO
+namespace Umbraco.Cms.Core.DependencyInjection
 {
 	public static class MicrosoftAccountAuthenticationExtensions
 	{
@@ -45,18 +44,4 @@ namespace Umbraco.Community.AzureSSO
 		}
 		
 	}
-
-	public class AzureSSOConfiguration
-	{
-		public AzureSSOConfiguration()
-		{
-			GroupBindings = new Dictionary<string, string>();
-		}
-
-		public string? DisplayName { get; set; }
-		public string? ButtonStyle { get; set; }
-		public string? Icon { get; set; }
-		public Dictionary<string,string> GroupBindings { get; set; }
-		public bool? DenyLocalLogin { get; set; }
- 	}
 }
