@@ -1,0 +1,12 @@
+{
+	"$schema": "https://marketplace.umbraco.com/umbraco-marketplace-schema.json",
+	"AuthorDetails": {
+		"Name": "Steve Temple | Gibe Digital",
+		"Url": "https://github.com/Gibe/Umbraco.Community.AzureSSO",
+		"ImageUrl": "",
+		"SyncContributorsFromRepository": true
+	},
+	"DocumentationUrl": "https://github.com/Gibe/Umbraco.Community.AzureSSO",
+	"IssueTrackerUrl": "https://github.com/Gibe/Umbraco.Community.AzureSSO/issues",
+	"Tags": [ "Azure", "SSO", "Active Directory", "AAD" ]
+}
