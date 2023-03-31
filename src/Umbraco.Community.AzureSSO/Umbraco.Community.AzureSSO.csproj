@@ -8,8 +8,25 @@
 	  <Company>Gibe Digital</Company>
 	  <Product>Azure SSO for Umbraco</Product>
 		<ProjectUrl>https://github.com/Gibe/Umbraco.Community.AzureSSO</ProjectUrl>
-		<PackageTags>umbraco-marketplace</PackageTags>
+		<PackageTags>umbraco-marketplace;sso;azure-ad;aad</PackageTags>
+		<Copyright>Copyright (c) 2023 Gibe Digital Ltd</Copyright>
+		<Description>Umbraco module to simplify setup of Azure SSO login for Umbraco users</Description>
+		<Title>Umbraco Azure AD SSO</Title>
+		<PackageProjectUrl>https://github.com/Gibe/Umbraco.Community.AzureSSO</PackageProjectUrl>
+		<PackageIcon>AzureSSO.jpg</PackageIcon>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<RepositoryUrl>https://github.com/Gibe/Umbraco.Community.AzureSSO</RepositoryUrl>
   </PropertyGroup>
+  <ItemGroup>
+    <None Include="..\..\AzureSSO.jpg">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="..\..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Identity.Web.MicrosoftGraph" Version="1.25.10" />
 	</ItemGroup>
