@@ -3,7 +3,7 @@
     <TargetFrameworks>net7.0;net6.0</TargetFrameworks>
     <Nullable>enable</Nullable>
 	  <PackageId>Umbraco.Community.AzureSSO</PackageId>
-	  <Version>1.1.1</Version>
+	  <Version>1.1.0</Version>
 	  <Authors>Steve Temple</Authors>
 	  <Company>Gibe Digital</Company>
 	  <Product>Azure SSO for Umbraco</Product>
@@ -16,7 +16,6 @@
 		<PackageIcon>AzureSSO.jpg</PackageIcon>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<RepositoryUrl>https://github.com/Gibe/Umbraco.Community.AzureSSO</RepositoryUrl>
-		<RepositoryType>git</RepositoryType>
   </PropertyGroup>
   <ItemGroup>
     <None Include="..\..\AzureSSO.jpg">
