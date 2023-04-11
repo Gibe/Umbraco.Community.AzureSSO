@@ -62,6 +62,10 @@ You can also customise the configuration by setting these settings:
 | DenyLocalLogin   | Allow users to login via Umbraco's standard login     |
 | GroupBindings    | The bindings for AD group to Umbraco group            |
 
+## ButtonStyle
+
+The standard set is shown at https://lipis.github.io/bootstrap-social/
+
 ## Group Bindings
 
 To bind these you'll need to specify the active directory group and then the matching Umbraco group.
