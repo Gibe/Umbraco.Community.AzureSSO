@@ -57,6 +57,8 @@ You can also customise the configuration by setting these settings:
 | Setting          | Description                                           |
 | ---------------- | ----------------------------------------------------- |
 | DisplayName      | The display name for use on the login button          |
+| Icon             | The class name for the icon to use                    |
+| ButtonStyle      | The class name for the button style                   |
 | DenyLocalLogin   | Allow users to login via Umbraco's standard login     |
 | GroupBindings    | The bindings for AD group to Umbraco group            |
 
