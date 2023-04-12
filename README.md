@@ -39,7 +39,13 @@ To configure add the following section to the root of your appsettings.json file
     "GroupBindings": {
         "<AD group>": "<umbraco group>",
         "<another AD group>": "<umbraco group>"
-    }
+    },
+    "SetGroupsOnLogin": true,
+    "DefaultGroups": [
+		"editors"
+	],
+    "Icon": "fa fa-lock",
+    "ButtonStyle": "btn-microsoft",
 },
 ```
 
@@ -54,11 +60,15 @@ You'll need to configure these settings based on the values in Azure:
 
 You can also customise the configuration by setting these settings:
 
-| Setting          | Description                                           |
-| ---------------- | ----------------------------------------------------- |
-| DisplayName      | The display name for use on the login button          |
-| DenyLocalLogin   | Allow users to login via Umbraco's standard login     |
-| GroupBindings    | The bindings for AD group to Umbraco group            |
+| Setting          | Description                                                                                  |
+| ---------------- | -------------------------------------------------------------------------------------------- |
+| DisplayName      | The display name for use on the login button                                                 |
+| DenyLocalLogin   | Allow users to login via Umbraco's standard login                                            |
+| GroupBindings    | The bindings for AD group to Umbraco group                                                   |
+| SetGroupsOnLogin | Whether or not to reset the users assigned groups on each login                              |
+| DefaultGroups    | The groups to assign to users regardless of any AD groups assigned (defaults to none)        |
+| Icon             | The icon to use on the login button                                                          |
+| ButtonStyle      | The style to use on the login button                                                         |
 
 ## Group Bindings
 
