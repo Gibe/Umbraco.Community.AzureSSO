@@ -17,6 +17,10 @@ namespace Umbraco.Community.AzureSSO
 
 		public Dictionary<string, string> GroupBindings { get; set; }
 
+		public bool? SetGroupsOnLogin { get; set; }
+
+		public string[]? DefaultGroups { get; set; }
+
 		public bool? DenyLocalLogin { get; set; }
 	}
 }

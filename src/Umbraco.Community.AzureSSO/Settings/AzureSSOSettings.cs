@@ -14,6 +14,8 @@ namespace Umbraco.Community.AzureSSO.Settings
 		public string ButtonStyle => _configuration.ButtonStyle ?? "btn-microsoft";
 		public string Icon => _configuration.Icon ?? "fa fa-lock";
 		public Dictionary<string, string> GroupLookup => _configuration.GroupBindings;
+		public bool SetGroupsOnLogin => _configuration.SetGroupsOnLogin ?? true;
+		public string[] DefaultGroups => _configuration.DefaultGroups ?? new string[] { };
 		public bool DenyLocalLogin => _configuration.DenyLocalLogin ?? false;
 	}
 }

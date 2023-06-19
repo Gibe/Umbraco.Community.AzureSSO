@@ -2,7 +2,6 @@ using System.Linq;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
-using Microsoft.Identity.Web;
 using Umbraco.Cms.Core.Security;
 using Umbraco.Cms.Web.BackOffice.Security;
 using Umbraco.Community.AzureSSO.Settings;
@@ -61,7 +60,10 @@ namespace Umbraco.Community.AzureSSO
 				OnAutoLinking = SetGroups,
 				OnExternalLogin = (user, loginInfo) =>
 				{
-					SetGroups(user, loginInfo);
+					if (_settings.SetGroupsOnLogin) 
+		 			{
+						SetGroups(user, loginInfo);
+					}
 
 					return true; //returns a boolean indicating if sign in should continue or not.
 				}
@@ -89,6 +91,11 @@ namespace Umbraco.Community.AzureSSO
 				user.AddRole(_settings.GroupLookup[group.Value]);
 			}
 
+			foreach (var group in _settings.DefaultGroups)
+			{
+				user.AddRole(group);
+			}
+
 			if (loginInfo.Principal?.Identity?.Name != null)
 			{
 				user.Name = DisplayName(loginInfo.Principal, defaultValue: loginInfo.Principal.Identity.Name);
@@ -101,7 +108,7 @@ namespace Umbraco.Community.AzureSSO
 		{
 			var displayName = claimsPrincipal.FindFirstValue("name");
 
-			return !string.IsNullOrWhiteSpace(displayName) ? displayName: defaultValue;
+			return !string.IsNullOrWhiteSpace(displayName) ? displayName : defaultValue;
 		}
 	}
 }
