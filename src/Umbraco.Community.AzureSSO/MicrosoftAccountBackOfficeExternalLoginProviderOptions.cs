@@ -60,7 +60,10 @@ namespace Umbraco.Community.AzureSSO
 				OnAutoLinking = SetGroups,
 				OnExternalLogin = (user, loginInfo) =>
 				{
-					if (_settings.SetGroupsOnLogin) SetGroups(user, loginInfo);
+					if (_settings.SetGroupsOnLogin) 
+		 			{
+						SetGroups(user, loginInfo);
+					}
 
 					return true; //returns a boolean indicating if sign in should continue or not.
 				}
