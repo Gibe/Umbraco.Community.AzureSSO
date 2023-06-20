@@ -1,0 +1,5 @@
+﻿<Project>
+	<ItemGroup>
+		<UmbracoJsonSchemaFiles Include="$(MSBuildThisFileDirectory)..\appsettings-schema.UmbracoCommunityAzureSSO.json" Weight="-80" />
+	</ItemGroup>
+</Project>
