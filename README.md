@@ -36,13 +36,14 @@ To configure add the following section to the root of your appsettings.json file
     },
     "DisplayName": "Azure AD",
     "DenyLocalLogin": true,
+    "AutoRedirectLoginToExternalProvider": true,
     "GroupBindings": {
         "<AD group>": "<umbraco group>",
         "<another AD group>": "<umbraco group>"
     },
     "SetGroupsOnLogin": true,
     "DefaultGroups": [
-		"editors"
+		"editor"
 	],
     "Icon": "fa fa-lock",
     "ButtonStyle": "btn-microsoft",
@@ -65,6 +66,7 @@ You can also customise the configuration by setting these settings:
 | DisplayName      | The display name for use on the login button                                                 |
 | Icon             | The class name for the icon to use                                                           |
 | ButtonStyle      | The class name for the button style                                                          |
+| AutoRedirectLoginToExternalProvider   | Automatically redirect to the external login provider                                            |
 | DenyLocalLogin   | Allow users to login via Umbraco's standard login                                            |
 | GroupBindings    | The bindings for AD group to Umbraco group                                                   |
 | SetGroupsOnLogin | Whether or not to reset the users assigned groups on each login                              |
