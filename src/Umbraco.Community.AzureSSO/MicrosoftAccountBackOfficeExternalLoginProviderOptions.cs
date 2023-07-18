@@ -79,7 +79,7 @@ namespace Umbraco.Community.AzureSSO
 			// Optionally choose to automatically redirect to the
 			// external login provider so the user doesn't have
 			// to click the login button.
-			options.AutoRedirectLoginToExternalProvider = _settings.AutoRedirectLoginToExternalProvider; ;
+			options.AutoRedirectLoginToExternalProvider = _settings.AutoRedirectLoginToExternalProvider;
 		}
 
 		private void SetGroups(BackOfficeIdentityUser user, ExternalLoginInfo loginInfo)
