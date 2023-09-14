@@ -35,7 +35,6 @@ namespace Umbraco.Cms.Core.DependencyInjection
 								displayName: azureSsoConfiguration.DisplayName ?? "Azure Active Directory",
 								openIdConnectScheme: backOfficeAuthenticationBuilder.SchemeForBackOffice(MicrosoftAccountBackOfficeExternalLoginProviderOptions.SchemeName) ?? String.Empty)
 							.EnableTokenAcquisitionToCallDownstreamApi(options => builder.Config.Bind("AzureSSO:Credentials", options), initialScopes)
-							.AddDistributedTokenCaches()
 							.AddTokenCaches(azureSsoConfiguration.TokenCacheType);
 					});
 			});
