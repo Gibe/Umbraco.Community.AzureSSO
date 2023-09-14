@@ -22,5 +22,7 @@ namespace Umbraco.Community.AzureSSO
 		public string[]? DefaultGroups { get; set; }
 
 		public bool? DenyLocalLogin { get; set; }
+
+		public TokenCacheType TokenCacheType { get; set; } = TokenCacheType.InMemory;
 	}
 }

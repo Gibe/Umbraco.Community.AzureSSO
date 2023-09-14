@@ -17,5 +17,7 @@ namespace Umbraco.Community.AzureSSO.Settings
 		public bool SetGroupsOnLogin => _configuration.SetGroupsOnLogin ?? true;
 		public string[] DefaultGroups => _configuration.DefaultGroups ?? new string[] { };
 		public bool DenyLocalLogin => _configuration.DenyLocalLogin ?? false;
+		public TokenCacheType TokenCacheType => _configuration.TokenCacheType;
+
 	}
 }
