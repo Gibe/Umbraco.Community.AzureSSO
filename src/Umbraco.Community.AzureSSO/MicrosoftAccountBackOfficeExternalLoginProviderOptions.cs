@@ -60,8 +60,11 @@ namespace Umbraco.Community.AzureSSO
 				// Optional callback
 				OnAutoLinking = (autoLoginUser, loginInfo) =>
 				{
-					SetGroups(autoLoginUser, loginInfo);
-					SetName(autoLoginUser, loginInfo);
+					if (!autoLoginUser.IsApproved)
+					{
+						SetGroups(autoLoginUser, loginInfo);
+						SetName(autoLoginUser, loginInfo);
+					}
 				},
 				OnExternalLogin = (user, loginInfo) =>
 				{
