@@ -58,13 +58,18 @@ namespace Umbraco.Community.AzureSSO
 			)
 			{
 				// Optional callback
-				OnAutoLinking = SetGroups,
+				OnAutoLinking = (autoLoginUser, loginInfo) =>
+				{
+					SetGroups(autoLoginUser, loginInfo);
+					SetName(autoLoginUser, loginInfo);
+				},
 				OnExternalLogin = (user, loginInfo) =>
 				{
-					if (_settings.SetGroupsOnLogin) 
-		 			{
+					if (_settings.SetGroupsOnLogin)
+					{
 						SetGroups(user, loginInfo);
 					}
+					SetName(user, loginInfo);
 
 					return true; //returns a boolean indicating if sign in should continue or not.
 				}
@@ -96,7 +101,10 @@ namespace Umbraco.Community.AzureSSO
 			{
 				user.AddRole(group);
 			}
+		}
 
+		private void SetName(BackOfficeIdentityUser user, ExternalLoginInfo loginInfo)
+		{
 			if (loginInfo.Principal?.Identity?.Name != null)
 			{
 				user.Name = DisplayName(loginInfo.Principal, defaultValue: loginInfo.Principal.Identity.Name);
