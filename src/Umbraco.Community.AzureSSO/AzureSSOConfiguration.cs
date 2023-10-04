@@ -26,6 +26,8 @@ namespace Umbraco.Community.AzureSSO
 
 		public bool? DenyLocalLogin { get; set; }
 
-		public bool? AutoRedirectLoginToExternalProvider { get; set; }
-	}
+		public TokenCacheType TokenCacheType { get; set; } = TokenCacheType.InMemory;
+	
+    public bool? AutoRedirectLoginToExternalProvider { get; set; }
+  }
 }
