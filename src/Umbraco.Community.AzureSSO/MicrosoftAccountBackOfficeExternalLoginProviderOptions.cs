@@ -94,7 +94,11 @@ namespace Umbraco.Community.AzureSSO
 			var groups = loginInfo.Principal.Claims.Where(c => _settings.GroupLookup.ContainsKey(c.Value));
 			foreach (var group in groups)
 			{
-				user.AddRole(_settings.GroupLookup[group.Value]);
+				var umbracoGroups = _settings.GroupLookup[group.Value].Split(',');
+				foreach (var umbracoGroupAlias in umbracoGroups)
+				{
+					user.AddRole(umbracoGroupAlias);
+				}
 			}
 
 			foreach (var group in _settings.DefaultGroups)
