@@ -2,6 +2,7 @@ using System.Linq;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
+using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Security;
 using Umbraco.Cms.Web.BackOffice.Security;
 using Umbraco.Community.AzureSSO.Settings;
@@ -19,9 +20,9 @@ namespace Umbraco.Community.AzureSSO
 			_settings = settings;
 		}
 
-		public void Configure(string name, BackOfficeExternalLoginProviderOptions options)
+		public void Configure(string? name, BackOfficeExternalLoginProviderOptions options)
 		{
-			if (name != "Umbraco." + SchemeName)
+			if (name != $"{Constants.Security.BackOfficeExternalAuthenticationTypePrefix}{SchemeName}")
 			{
 				return;
 			}
@@ -40,7 +41,7 @@ namespace Umbraco.Community.AzureSSO
 					// Optionally specify default user group, else
 					// assign in the OnAutoLinking callback
 					// (default is editor)
-					defaultUserGroups: new string[] { },
+					defaultUserGroups: System.Array.Empty<string>(),
 
 					// Optionally specify the default culture to create
 					// the user as. If null it will use the default
@@ -57,13 +58,18 @@ namespace Umbraco.Community.AzureSSO
 			)
 			{
 				// Optional callback
-				OnAutoLinking = SetGroups,
+				OnAutoLinking = (autoLoginUser, loginInfo) =>
+				{
+					SetGroups(autoLoginUser, loginInfo);
+					SetName(autoLoginUser, loginInfo);
+				},
 				OnExternalLogin = (user, loginInfo) =>
 				{
-					if (_settings.SetGroupsOnLogin) 
-		 			{
+					if (_settings.SetGroupsOnLogin)
+					{
 						SetGroups(user, loginInfo);
 					}
+					SetName(user, loginInfo);
 
 					return true; //returns a boolean indicating if sign in should continue or not.
 				}
@@ -77,8 +83,8 @@ namespace Umbraco.Community.AzureSSO
 
 			// Optionally choose to automatically redirect to the
 			// external login provider so the user doesn't have
-			// to click the login button. This is
-			options.AutoRedirectLoginToExternalProvider = false;
+			// to click the login button.
+			options.AutoRedirectLoginToExternalProvider = _settings.AutoRedirectLoginToExternalProvider;
 		}
 
 		private void SetGroups(BackOfficeIdentityUser user, ExternalLoginInfo loginInfo)
@@ -99,7 +105,10 @@ namespace Umbraco.Community.AzureSSO
 			{
 				user.AddRole(group);
 			}
+		}
 
+		private void SetName(BackOfficeIdentityUser user, ExternalLoginInfo loginInfo)
+		{
 			if (loginInfo.Principal?.Identity?.Name != null)
 			{
 				user.Name = DisplayName(loginInfo.Principal, defaultValue: loginInfo.Principal.Identity.Name);

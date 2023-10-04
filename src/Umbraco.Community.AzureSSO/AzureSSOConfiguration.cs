@@ -4,6 +4,9 @@ namespace Umbraco.Community.AzureSSO
 {
 	public class AzureSSOConfiguration
 	{
+		public const string AzureSsoSectionName = "AzureSSO";
+		public const string AzureSsoCredentialSectionName = "AzureSSO:Credentials";
+
 		public AzureSSOConfiguration()
 		{
 			GroupBindings = new Dictionary<string, string>();
@@ -24,5 +27,7 @@ namespace Umbraco.Community.AzureSSO
 		public bool? DenyLocalLogin { get; set; }
 
 		public TokenCacheType TokenCacheType { get; set; } = TokenCacheType.InMemory;
-	}
+	
+    public bool? AutoRedirectLoginToExternalProvider { get; set; }
+  }
 }
