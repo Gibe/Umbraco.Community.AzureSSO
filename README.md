@@ -61,16 +61,16 @@ You'll need to configure these settings based on the values in Azure:
 
 You can also customise the configuration by setting these settings:
 
-| Setting          | Description                                                                                  |
-| ---------------- | -------------------------------------------------------------------------------------------- |
-| DisplayName      | The display name for use on the login button                                                 |
-| Icon             | The class name for the icon to use                                                           |
-| ButtonStyle      | The class name for the button style                                                          |
-| AutoRedirectLoginToExternalProvider   | Automatically redirect to the external login provider                                            |
-| DenyLocalLogin   | Allow users to login via Umbraco's standard login                                            |
-| GroupBindings    | The bindings for AD group to Umbraco group                                                   |
-| SetGroupsOnLogin | Whether or not to reset the users assigned groups on each login                              |
-| DefaultGroups    | The groups to assign to users regardless of any AD groups assigned (defaults to none)        |
+| Setting          			| Description                                                                                  |
+| ------------------------------------- | -------------------------------------------------------------------------------------------- |
+| DisplayName      			| The display name for use on the login button                                                 |
+| Icon             			| The class name for the icon to use                                                           |
+| ButtonStyle      			| The class name for the button style                                                          |
+| AutoRedirectLoginToExternalProvider   | Automatically redirect to the external login provider                                        |
+| DenyLocalLogin   			| Allow users to login via Umbraco's standard login                                            |
+| GroupBindings    			| The bindings for AD group to Umbraco group                                                   |
+| SetGroupsOnLogin 			| Whether or not to reset the users assigned groups on each login                              |
+| DefaultGroups    			| The groups to assign to users regardless of any AD groups assigned (defaults to none)        |
 
 ## ButtonStyle
 
