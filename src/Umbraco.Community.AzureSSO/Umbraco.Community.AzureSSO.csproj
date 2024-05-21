@@ -50,10 +50,10 @@
 	</ItemGroup>
 	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
 		<PackageReference Include="Umbraco.Cms.Core">
-			<Version>10.0.0</Version>
+			<Version>10.8.6</Version>
 		</PackageReference>
 		<PackageReference Include="Umbraco.Cms.Web.BackOffice">
-			<Version>10.0.0</Version>
+			<Version>10.8.6</Version>
 		</PackageReference>
 	</ItemGroup>
 	<ItemGroup>
