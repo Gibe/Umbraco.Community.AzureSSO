@@ -50,6 +50,7 @@ To configure add the following section to the root of your appsettings.json file
     "ButtonStyle": "btn-microsoft",
 },
 ```
+On Umbraco v13+ change the `Icon` to `"icon-microsoft-fill"`, i.e. `"Icon": "icon-microsoft-fill",`
 
 You'll need to configure these settings based on the values in Azure:
 
