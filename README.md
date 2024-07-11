@@ -1,9 +1,11 @@
 # Umbraco.Community.AzureSSO
-Add Azure AD SSO to Umbraco v10-11 sites. This will allow you to automatically create Umbraco user accounts for users in your AD. This will then associate the Umbraco users with groups based on their AD group, and the configuration below.
 
-First you, or an Azure AD administration will need to create an App Registration in the Azure Portal which will be used to authenticate the site against Azure AD. Follow [these instructions to setup the new App Registration](AzureADSetup.md)
+Add Azure Entra ID SSO to Umbraco v10-11 sites. This will allow you to automatically create Umbraco user accounts for users in your Microsoft Entra ID tenant. This will then associate the Umbraco users with groups based on their group, and the configuration below.
 
-To install
+First you, or an Entra ID administrator will need to create an App Registration in the Azure Portal which will be used to authenticate the site against Azure AD. Follow [these instructions to setup the new App Registration](EntraIDSetup.md)
+
+To install:
+
 `dotnet add package Umbraco.Community.AzureSSO`
 
 In startup.cs under ConfigureServices add:
@@ -54,12 +56,12 @@ On Umbraco v13+ change the `Icon` to `"icon-microsoft-fill"`, i.e. `"Icon": "ico
 
 You'll need to configure these settings based on the values in Azure:
 
-| Setting          | Description                                                           |
-| ---------------- | -----------------------------------------------------                 |
-| Domain           | The value in Primary domain in the Azure Active Directory Overview    |
-| TenantId         | The value in Directory (tenant) ID on the app registration Overview   |
-| ClientId         | The value in Application (Client) ID on the app registration Overview |
-| ClientSecret     | The client secret created for the app registration                    |
+| Setting          | Description                                                              |
+| ---------------- | ------------------------------------------------------------------------ |
+| Domain           | The value in Primary domain in the Microsoft Entra ID Directory Overview |
+| TenantId         | The value in Directory (tenant) ID on the App Registration Overview      |
+| ClientId         | The value in Application (Client) ID on the App Registration Overview    |
+| ClientSecret     | The client secret created for the App Registration                       |
 
 You can also customise the configuration by setting these settings:
 
@@ -70,10 +72,10 @@ You can also customise the configuration by setting these settings:
 | ButtonStyle                           | The class name for the button style                                                          |
 | AutoRedirectLoginToExternalProvider   | Automatically redirect to the external login provider                                        |
 | DenyLocalLogin                        | Allow users to login via Umbraco's standard login                                            |
-| GroupBindings                         | The bindings for AD group to Umbraco group                                                   |
+| GroupBindings                         | The bindings for Entry ID group to Umbraco group                                             |
 | SetGroupsOnLogin                      | Whether or not to reset the users assigned groups on each login                              |
 | TokenCacheType                        | Token Cache Type to use: InMemory, Session, Distributed (defaults to InMemory)               |
-| DefaultGroups                         | The groups to assign to users regardless of any AD groups assigned (defaults to none)        |
+| DefaultGroups                         | The groups to assign to users regardless of any Entry ID groups assigned (defaults to none)  |
 
 ## ButtonStyle
 
@@ -81,7 +83,7 @@ The standard set is shown at https://lipis.github.io/bootstrap-social/
 
 ## Group Bindings
 
-To bind these you'll need to specify the active directory group and then the matching Umbraco group.
+To bind these you'll need to specify the Entra ID group and then the matching Umbraco group.
 
 For example we use: `"GIBE\Producers" : "editors"` to bind everyone in the `GIBE\Producers` group to the Umbraco editors group. 
 
