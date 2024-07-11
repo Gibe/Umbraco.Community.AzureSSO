@@ -8,23 +8,8 @@ To install:
 
 `dotnet add package Umbraco.Community.AzureSSO`
 
-In startup.cs under ConfigureServices add:
+You'll need to configure the package by adding the following section to the root of your appsettings.json file and customise as appropriate
 
-`.AddMicrosoftAccountAuthentication()`
-
-In the services.AddUmbraco bindings
-
-For example:
-```
-var builder = services.AddUmbraco(_env, _config)
-  .AddBackOffice()
-	.AddWebsite()
-	.AddComposers()
-	.AddMicrosoftAccountAuthentication()
-	.AddAzureBlobMediaFileSystem();
-```
-
-To configure add the following section to the root of your appsettings.json file and customise as appropriate
 ```
 "AzureSSO": {
     "Credentials": {
