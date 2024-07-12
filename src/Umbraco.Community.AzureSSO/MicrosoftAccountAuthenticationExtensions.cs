@@ -3,15 +3,15 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Identity.Web;
-using Umbraco.Community.AzureSSO;
+using Umbraco.Cms.Core.DependencyInjection;
 using Umbraco.Community.AzureSSO.Settings;
 using Umbraco.Extensions;
 
-namespace Umbraco.Cms.Core.DependencyInjection
+namespace Umbraco.Community.AzureSSO
 {
 	public static class MicrosoftAccountAuthenticationExtensions
 	{
-		public static IUmbracoBuilder AddMicrosoftAccountAuthentication(this IUmbracoBuilder builder)
+		internal static IUmbracoBuilder AddMicrosoftAccountAuthentication(this IUmbracoBuilder builder)
 		{
 			var azureSsoConfiguration = new AzureSSOConfiguration();
 			builder.Config.Bind(AzureSSOConfiguration.AzureSsoSectionName, azureSsoConfiguration);
