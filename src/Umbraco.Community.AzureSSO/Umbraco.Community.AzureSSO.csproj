@@ -3,7 +3,7 @@
     <TargetFrameworks>net8.0;net7.0;net6.0</TargetFrameworks>
     <Nullable>enable</Nullable>
 	  <PackageId>Umbraco.Community.AzureSSO</PackageId>
-	  <Version>1.2.0-beta002</Version>
+	  <Version>2.0.0</Version>
 	  <Authors>Steve Temple</Authors>
 	  <Company>Gibe Digital</Company>
 	  <Product>Azure SSO for Umbraco</Product>
