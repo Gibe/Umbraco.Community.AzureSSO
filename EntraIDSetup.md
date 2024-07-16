@@ -16,7 +16,7 @@ Within that application registration select Authentication and ensure Access Tok
 
 Then under Certificates and Secrets select + New client secret and create a new secret. Copy the value of the new secret and save that for inserting into the appSettings.json later. This will go into the value for `ClientSecret`
 
-Under Token configuration, select Add optional claimm then select ID and check email, when it asks agree to the permissions request
+Under Token configuration, select Add optional claim then select ID and check email, when it asks agree to the permissions request
 
 ![image](https://user-images.githubusercontent.com/113788/228668304-5f0a7671-c1f7-4ac1-bfd0-a8157d6a843c.png)
 
@@ -32,5 +32,15 @@ The API permissions tab should look like this, no changes are required
 
 ![image](https://user-images.githubusercontent.com/113788/228669355-651e462a-b276-4743-904c-c0ad6876b4c1.png)
 
+## Trouble shooting 
+### Error message: Users blocked unless they are specifically granted access to the application
+Azure AAD displays the message:
 
+```Your administrator has configured the application application name ('xxxx') to block users unless they are specifically granted ('assigned') access to the application```
 
+It is likely that the group policy is to Deny access  to an application. Instructions on how to grant users or groups access to the application can be found on Microsoft at [manage users and groups assignment to an application](https://learn.microsoft.com/en-us/entra/identity/enterprise-apps/assign-user-or-group-access-portal?pivots=portal) 
+
+### Error Message: No reply address provided
+Azure AAD returns the message:
+```No reply address provided.```
+The Redirect URI is not optional. If working with SSO in multiple environments configure multiple Redirect URIs, one for each environment, with in the App Registration. More information Redirect URIs can be found on Microsoft at [Redirect URI (reply URL) outline and restrictions](https://learn.microsoft.com/en-us/entra/identity-platform/reply-url).
