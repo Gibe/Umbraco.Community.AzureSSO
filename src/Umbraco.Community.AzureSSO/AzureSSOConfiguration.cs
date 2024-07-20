@@ -21,13 +21,14 @@ namespace Umbraco.Community.AzureSSO
 		public Dictionary<string, string> GroupBindings { get; set; }
 
 		public bool? SetGroupsOnLogin { get; set; }
+		public bool? LogUnmappedRolesAsWarning { get; set; }
 
 		public string[]? DefaultGroups { get; set; }
 
 		public bool? DenyLocalLogin { get; set; }
 
 		public TokenCacheType TokenCacheType { get; set; } = TokenCacheType.InMemory;
-	
-    public bool? AutoRedirectLoginToExternalProvider { get; set; }
-  }
+
+		public bool? AutoRedirectLoginToExternalProvider { get; set; }
+	}
 }

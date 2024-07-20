@@ -15,6 +15,7 @@ namespace Umbraco.Community.AzureSSO.Settings
 		public string Icon => _configuration.Icon ?? "fa fa-lock";
 		public Dictionary<string, string> GroupLookup => _configuration.GroupBindings;
 		public bool SetGroupsOnLogin => _configuration.SetGroupsOnLogin ?? true;
+		public bool LogUnmappedRolesAsWarning => _configuration.LogUnmappedRolesAsWarning ?? false;
 		public string[] DefaultGroups => _configuration.DefaultGroups ?? System.Array.Empty<string>();
 		public bool DenyLocalLogin => _configuration.DenyLocalLogin ?? false;
 		public TokenCacheType TokenCacheType => _configuration.TokenCacheType;
