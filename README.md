@@ -35,6 +35,7 @@ You'll need to configure the package by adding the following section to the root
 	],
     "Icon": "fa fa-lock",
     "ButtonStyle": "btn-microsoft",
+    "LogUnmappedRolesAsWarning": false
 },
 ```
 On Umbraco v13+ change the `Icon` to `"icon-microsoft-fill"`, i.e. `"Icon": "icon-microsoft-fill",`
@@ -81,6 +82,10 @@ If you are having problems with NET BIOS group names, you can set the groups cla
 ![image](https://user-images.githubusercontent.com/1257752/235880241-4381fa6e-d72d-494e-bd3f-1ceaf8b4e71d.png)
 
 You can now use the guid format for the Group Id like: `"xxxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxx": "admin", "44a38651-xxxx-4c92-b1b6-51cf26ff9bab": "editor"`
+
+## LogUnmappedRolesAsWarning
+
+When `SetGroupsOnLogin` is set to true, if `LogUnmappedRolesAsWarning` is also set to true this will log as warning for unmapped Entra ID groups, where the Entra ID name has a slash `\` in it. Be design it does not log everything to prevent logging of email addresses and so on.
 
 
 
