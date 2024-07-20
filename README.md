@@ -70,7 +70,7 @@ The standard set is shown at https://lipis.github.io/bootstrap-social/
 
 To bind these you'll need to specify the Entra ID group and then the matching Umbraco group.
 
-For example we use: `"GIBE\Producers" : "editors"` to bind everyone in the `GIBE\Producers` group to the Umbraco editors group. 
+For example we use: `"GIBE\Producers" : "editors"` to bind everyone in the `GIBE\Producers` group to the Umbraco editors group using the Umbraco Alias for the group.  The Umbraco Alias for a group is displayed to the right of the group name in the User Group editor view.
 
 Beware these will be reset on each login, so changing groups in umbraco will only take effect until the user next logs in. If a user is removed from an AD group they'll automatically be removed from the matching Umbraco group on next login.
 
