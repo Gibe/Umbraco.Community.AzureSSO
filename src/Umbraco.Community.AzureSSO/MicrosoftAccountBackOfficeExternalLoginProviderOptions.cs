@@ -114,7 +114,7 @@ namespace Umbraco.Community.AzureSSO
 				user.AddRole(group);
 			}
 
-			if (_settings.LogUnmappedRolesWarning)
+			if (_settings.LogUnmappedRolesAsWarning)
 			{
 				var unmappedGroups = loginInfo.Principal.Claims.Where(c => !_settings.GroupLookup.ContainsKey(c.Value) && c.Value.Contains("\\")).Select(c => c.Value).ToList();
 				if (unmappedGroups.Any())
