@@ -22,18 +22,20 @@ namespace Umbraco.Community.AzureSSO
 
 		public void Configure(string? name, BackOfficeExternalLoginProviderOptions options)
 		{
-			if (name != $"{Constants.Security.BackOfficeExternalAuthenticationTypePrefix}{SchemeName}")
+			var profile = _settings.Profiles
+				.FirstOrDefault(x => x.Name == name);
+			if (profile == null)
 			{
 				return;
 			}
 
-			Configure(options);
+			Configure(options, profile);
 		}
 
-		public void Configure(BackOfficeExternalLoginProviderOptions options)
+		public void Configure(BackOfficeExternalLoginProviderOptions options, AzureSsoProfileSettings settings)
 		{
-			options.ButtonStyle = _settings.ButtonStyle;
-			options.Icon = _settings.Icon;
+			options.ButtonStyle = settings.ButtonStyle;
+			options.Icon = settings.Icon;
 			options.AutoLinkOptions = new ExternalSignInAutoLinkOptions(
 					// must be true for auto-linking to be enabled
 					autoLinkExternalAccount: true,
@@ -62,15 +64,15 @@ namespace Umbraco.Community.AzureSSO
 				{
 					if (!autoLoginUser.IsApproved)
 					{
-						SetGroups(autoLoginUser, loginInfo);
+						SetGroups(autoLoginUser, loginInfo, settings);
 						SetName(autoLoginUser, loginInfo);
 					}
 				},
 				OnExternalLogin = (user, loginInfo) =>
 				{
-					if (_settings.SetGroupsOnLogin)
+					if (settings.SetGroupsOnLogin)
 					{
-						SetGroups(user, loginInfo);
+						SetGroups(user, loginInfo, settings);
 					}
 					SetName(user, loginInfo);
 
@@ -82,29 +84,29 @@ namespace Umbraco.Community.AzureSSO
 			// to login with a username/password. If this is set
 			// to true, it will disable username/password login
 			// even if there are other external login providers installed.
-			options.DenyLocalLogin = _settings.DenyLocalLogin;
+			options.DenyLocalLogin = settings.DenyLocalLogin;
 
 			// Optionally choose to automatically redirect to the
 			// external login provider so the user doesn't have
 			// to click the login button.
-			options.AutoRedirectLoginToExternalProvider = _settings.AutoRedirectLoginToExternalProvider;
+			options.AutoRedirectLoginToExternalProvider = settings.AutoRedirectLoginToExternalProvider;
 		}
 
-		private void SetGroups(BackOfficeIdentityUser user, ExternalLoginInfo loginInfo)
+		private void SetGroups(BackOfficeIdentityUser user, ExternalLoginInfo loginInfo, AzureSsoProfileSettings settings)
 		{
 			user.Roles.Clear();
 
-			var groups = loginInfo.Principal.Claims.Where(c => _settings.GroupLookup.ContainsKey(c.Value));
+			var groups = loginInfo.Principal.Claims.Where(c => settings.GroupLookup.ContainsKey(c.Value));
 			foreach (var group in groups)
 			{
-				var umbracoGroups = _settings.GroupLookup[group.Value].Split(',');
+				var umbracoGroups = settings.GroupLookup[group.Value].Split(',');
 				foreach (var umbracoGroupAlias in umbracoGroups)
 				{
 					user.AddRole(umbracoGroupAlias);
 				}
 			}
 
-			foreach (var group in _settings.DefaultGroups)
+			foreach (var group in settings.DefaultGroups)
 			{
 				user.AddRole(group);
 			}
@@ -125,6 +127,11 @@ namespace Umbraco.Community.AzureSSO
 			var displayName = claimsPrincipal.FindFirstValue("name");
 
 			return !string.IsNullOrWhiteSpace(displayName) ? displayName : defaultValue;
+		}
+
+		public void Configure(BackOfficeExternalLoginProviderOptions options)
+		{
+			// TODO : What do we do here
 		}
 	}
 }

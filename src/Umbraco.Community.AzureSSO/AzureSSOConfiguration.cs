@@ -5,12 +5,12 @@ namespace Umbraco.Community.AzureSSO
 	public class AzureSSOConfiguration
 	{
 		public const string AzureSsoSectionName = "AzureSSO";
-		public const string AzureSsoCredentialSectionName = "AzureSSO:Credentials";
 
 		public AzureSSOConfiguration()
 		{
 			GroupBindings = new Dictionary<string, string>();
 		}
+		public string? Name { get; set; }
 
 		public string? DisplayName { get; set; }
 
@@ -27,7 +27,22 @@ namespace Umbraco.Community.AzureSSO
 		public bool? DenyLocalLogin { get; set; }
 
 		public TokenCacheType TokenCacheType { get; set; } = TokenCacheType.InMemory;
-	
-    public bool? AutoRedirectLoginToExternalProvider { get; set; }
-  }
+
+		public bool? AutoRedirectLoginToExternalProvider { get; set; }
+
+		public AzureSSOCredentials Credentials { get; set; }
+
+		public AzureSSOConfiguration[]? Profiles { get; set; }
+	}
+
+	public class AzureSSOCredentials
+	{
+		public string Instance { get; set; }
+		public string Domain { get; set; }
+		public string TenantId { get; set; }
+		public string ClientId { get; set; }
+		public string ClientSecret { get; set; }
+		public string CallbackPath { get; set; }
+		public string SignedOutCallbackPath { get; set; }
+	}
 }

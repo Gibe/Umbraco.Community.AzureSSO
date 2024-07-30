@@ -82,7 +82,71 @@ If you are having problems with NET BIOS group names, you can set the groups cla
 
 You can now use the guid format for the Group Id like: `"xxxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxx": "admin", "44a38651-xxxx-4c92-b1b6-51cf26ff9bab": "editor"`
 
+# Advanced usage
 
+## Multiple tenants
+
+If you'd like to use more than one tenant, or app registration then you can change the configuration to use profiles, see below.
+This could be used for having one SSO option for agency users and another for client users. 
+
+```
+"AzureSSO": {
+  "Profiles": [
+    {
+      "Name": "InternalAccount",
+      "Credentials": {
+        "Instance": "https://login.microsoftonline.com/",
+        "Domain": "<domain>",
+        "TenantId": "<tenantId>",
+        "ClientId": "<clientId>",
+        "CallbackPath": "/umbraco-microsoft-signin/",
+        "SignedOutCallbackPath ": "/umbraco-microsoft-signout/",
+        "ClientSecret": "<clientSecret>"
+      },
+      "DisplayName": "My AD",
+      "DenyLocalLogin": true,
+      "AutoRedirectLoginToExternalProvider": false,
+      "TokenCacheType": "InMemory",
+      "GroupBindings": {
+          "<AD group>": "<umbraco group>",
+          "<another AD group>": "<umbraco group>"
+      },
+      "SetGroupsOnLogin": true,
+      "DefaultGroups": [
+		    "editor"
+	    ],
+      "Icon": "fa fa-lock",
+      "ButtonStyle": "btn-microsoft",
+    },
+    {
+      "Name": "AlternateAccount",
+      "Credentials": {
+        "Instance": "https://login.microsoftonline.com/",
+        "Domain": "<domain>",
+        "TenantId": "<tenantId>",
+        "ClientId": "<clientId>",
+        "CallbackPath": "/umbraco-microsoft-alt-signin/",
+        "SignedOutCallbackPath ": "/umbraco-microsoft-alt-signout/",
+        "ClientSecret": "<clientSecret>"
+      },
+      "DisplayName": "My Client AD",
+      "DenyLocalLogin": true,
+      "AutoRedirectLoginToExternalProvider": false,
+      "TokenCacheType": "InMemory",
+      "GroupBindings": {
+          "<AD group>": "<umbraco group>",
+          "<another AD group>": "<umbraco group>"
+      },
+      "SetGroupsOnLogin": true,
+      "DefaultGroups": [
+		    "editor"
+	    ],
+      "Icon": "fa fa-lock",
+      "ButtonStyle": "btn-microsoft",
+    },
+  ]
+},
+```
 
 
 
