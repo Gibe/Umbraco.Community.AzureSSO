@@ -6,10 +6,6 @@ namespace Umbraco.Community.AzureSSO
 	{
 		public const string AzureSsoSectionName = "AzureSSO";
 
-		public AzureSSOConfiguration()
-		{
-			GroupBindings = new Dictionary<string, string>();
-		}
 		public string? Name { get; set; }
 
 		public string? DisplayName { get; set; }
@@ -18,7 +14,7 @@ namespace Umbraco.Community.AzureSSO
 
 		public string? Icon { get; set; }
 
-		public Dictionary<string, string> GroupBindings { get; set; }
+		public Dictionary<string, string> GroupBindings { get; set; } = new();
 
 		public bool? SetGroupsOnLogin { get; set; }
 
@@ -30,7 +26,7 @@ namespace Umbraco.Community.AzureSSO
 
 		public bool? AutoRedirectLoginToExternalProvider { get; set; }
 
-		public AzureSSOCredentials Credentials { get; set; }
+		public AzureSSOCredentials? Credentials { get; set; }
 
 		public AzureSSOConfiguration[]? Profiles { get; set; }
 	}

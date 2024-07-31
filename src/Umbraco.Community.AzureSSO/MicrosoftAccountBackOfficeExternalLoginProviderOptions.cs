@@ -131,7 +131,7 @@ namespace Umbraco.Community.AzureSSO
 
 		public void Configure(BackOfficeExternalLoginProviderOptions options)
 		{
-			// TODO : What do we do here
+			// Unused
 		}
 	}
 }
