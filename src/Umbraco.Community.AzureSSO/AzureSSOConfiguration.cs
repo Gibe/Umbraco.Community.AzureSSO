@@ -1,4 +1,7 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Umbraco.Community.AzureSSO
 {
@@ -29,16 +32,57 @@ namespace Umbraco.Community.AzureSSO
 		public AzureSSOCredentials? Credentials { get; set; }
 
 		public AzureSSOConfiguration[]? Profiles { get; set; }
+
+		public bool IsValid()
+		{
+			return Credentials != null && Credentials.IsValid() &&
+			       ((Profiles != null && Profiles.Any() && AllValuesEmpty() && AllProfilesUnique()) ||
+			        Profiles.IsNullOrEmpty());
+		}
+
+		public bool AllValuesEmpty()
+		{
+			return String.IsNullOrEmpty(Name) &&
+			       String.IsNullOrEmpty(DisplayName) &&
+			       String.IsNullOrEmpty(ButtonStyle) &&
+			       String.IsNullOrEmpty(Icon) &&
+			       !GroupBindings.Any() &&
+			       SetGroupsOnLogin == null &&
+			       (DefaultGroups == null || !DefaultGroups.Any()) &&
+			       DenyLocalLogin == null &&
+			       AutoRedirectLoginToExternalProvider == null &&
+			       Credentials == null;
+		}
+
+		public bool AllProfilesUnique()
+		{
+			return Profiles != null &&
+				     Profiles.Select(x => x.Name).Distinct().Count() == Profiles.Count() &&
+			       Profiles.Select(x => x.Credentials?.CallbackPath).Distinct().Count() == Profiles.Count() &&
+			       Profiles.Select(x => x.Credentials?.SignedOutCallbackPath).Distinct().Count() == Profiles.Count() &&
+			       Profiles.Select(x => x.DisplayName).Distinct().Count() == Profiles.Count();
+		}
 	}
 
 	public class AzureSSOCredentials
 	{
-		public string Instance { get; set; }
-		public string Domain { get; set; }
-		public string TenantId { get; set; }
-		public string ClientId { get; set; }
-		public string ClientSecret { get; set; }
-		public string CallbackPath { get; set; }
-		public string SignedOutCallbackPath { get; set; }
+		public string Instance { get; set; } = "";
+		public string Domain { get; set; } = "";
+		public string TenantId { get; set; } = "";
+		public string ClientId { get; set; } = "";
+		public string ClientSecret { get; set; } = "";
+		public string CallbackPath { get; set; } = "";
+		public string SignedOutCallbackPath { get; set; } = "";
+
+		public bool IsValid()
+		{
+			return !string.IsNullOrEmpty(Instance) &&
+			       !string.IsNullOrEmpty(Domain) &&
+			       !string.IsNullOrEmpty(TenantId) &&
+			       !string.IsNullOrEmpty(ClientId) &&
+			       !string.IsNullOrEmpty(ClientSecret) &&
+			       !string.IsNullOrEmpty(CallbackPath) &&
+			       !string.IsNullOrEmpty(SignedOutCallbackPath);
+		}
 	}
 }

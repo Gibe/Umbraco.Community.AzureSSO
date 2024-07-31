@@ -13,26 +13,26 @@ You'll need to configure the package by adding the following section to the root
 ```
 "AzureSSO": {
     "Credentials": {
-        "Instance": "https://login.microsoftonline.com/",
-        "Domain": "<domain>",
-        "TenantId": "<tenantId>",
-        "ClientId": "<clientId>",
-        "CallbackPath": "/umbraco-microsoft-signin/",
-        "SignedOutCallbackPath ": "/umbraco-microsoft-signout/",
-        "ClientSecret": "<clientSecret>"
+      "Instance": "https://login.microsoftonline.com/",
+      "Domain": "<domain>",
+      "TenantId": "<tenantId>",
+      "ClientId": "<clientId>",
+      "CallbackPath": "/umbraco-microsoft-signin/",
+      "SignedOutCallbackPath ": "/umbraco-microsoft-signout/",
+      "ClientSecret": "<clientSecret>"
     },
     "DisplayName": "Azure AD",
     "DenyLocalLogin": true,
     "AutoRedirectLoginToExternalProvider": true,
     "TokenCacheType": "InMemory",
     "GroupBindings": {
-        "<AD group>": "<umbraco group>",
-        "<another AD group>": "<umbraco group>"
+      "<AD group>": "<umbraco group>",
+      "<another AD group>": "<umbraco group>"
     },
     "SetGroupsOnLogin": true,
     "DefaultGroups": [
-		"editor"
-	],
+		  "editor"
+	  ],
     "Icon": "fa fa-lock",
     "ButtonStyle": "btn-microsoft",
 },
@@ -108,8 +108,8 @@ This could be used for having one SSO option for agency users and another for cl
       "AutoRedirectLoginToExternalProvider": false,
       "TokenCacheType": "InMemory",
       "GroupBindings": {
-          "<AD group>": "<umbraco group>",
-          "<another AD group>": "<umbraco group>"
+        "<AD group>": "<umbraco group>",
+        "<another AD group>": "<umbraco group>"
       },
       "SetGroupsOnLogin": true,
       "DefaultGroups": [
@@ -134,8 +134,8 @@ This could be used for having one SSO option for agency users and another for cl
       "AutoRedirectLoginToExternalProvider": false,
       "TokenCacheType": "InMemory",
       "GroupBindings": {
-          "<AD group>": "<umbraco group>",
-          "<another AD group>": "<umbraco group>"
+        "<AD group>": "<umbraco group>",
+        "<another AD group>": "<umbraco group>"
       },
       "SetGroupsOnLogin": true,
       "DefaultGroups": [
@@ -147,6 +147,12 @@ This could be used for having one SSO option for agency users and another for cl
   ]
 },
 ```
+
+Each ClientId and ClientSecret should be different, also TentantId and domain should be different if using a different tenant.
+
+Please ensure that the CallbackPath and SignedOutCallbackPath are different for each profile.
+
+Note you cannot use AutoRedirectLoginToExternalProvider if you'd like 2 profiles.
 
 
 

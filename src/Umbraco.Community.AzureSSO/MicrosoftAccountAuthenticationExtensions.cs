@@ -1,5 +1,4 @@
 using System;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,7 +20,7 @@ namespace Umbraco.Community.AzureSSO
 			var settings = new AzureSsoSettings(azureSsoConfiguration);
 			builder.Services.AddSingleton<AzureSsoSettings>(conf => settings);
 			builder.Services.ConfigureOptions<MicrosoftAccountBackOfficeExternalLoginProviderOptions>();
-			
+
 			var initialScopes = Array.Empty<string>();
 			builder.AddBackOfficeExternalLogins(logins =>
 				{
@@ -35,12 +34,12 @@ namespace Umbraco.Community.AzureSSO
 											CopyCredentials(options, profile.Credentials);
 											options.SignInScheme = backOfficeAuthenticationBuilder.SchemeForBackOffice(profile.Name);
 											options.Events = new OpenIdConnectEvents();
-											
+
 										},
-										displayName: profile.DisplayName ?? "Azure Active Directory",
-										cookieScheme: profile.Name + "Cookies",
+										displayName: profile.DisplayName ?? "Microsoft Entra ID",
+										cookieScheme: $"{profile.Name}Cookies",
 										openIdConnectScheme: backOfficeAuthenticationBuilder.SchemeForBackOffice(profile.Name) ??
-										                     String.Empty)
+																				 String.Empty)
 									.EnableTokenAcquisitionToCallDownstreamApi(
 										options => CopyCredentials(options, profile.Credentials),
 										initialScopes)
@@ -48,9 +47,9 @@ namespace Umbraco.Community.AzureSSO
 							});
 					}
 				}
-			
+
 			);
-			
+
 			return builder;
 		}
 
