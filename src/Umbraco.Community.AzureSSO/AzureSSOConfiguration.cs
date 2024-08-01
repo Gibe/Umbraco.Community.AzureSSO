@@ -35,23 +35,27 @@ namespace Umbraco.Community.AzureSSO
 
 		public bool IsValid()
 		{
-			return Credentials != null && Credentials.IsValid() &&
-			       ((Profiles != null && Profiles.Any() && AllValuesEmpty() && AllProfilesUnique()) ||
-			        Profiles.IsNullOrEmpty());
+			return (Profiles != null && Profiles.Any() && AllValuesEmpty() && AllProfilesUnique() && AllProfilesHaveName()) ||
+			       (Profiles.IsNullOrEmpty() && Credentials != null && Credentials.IsValid());
 		}
 
 		public bool AllValuesEmpty()
 		{
-			return String.IsNullOrEmpty(Name) &&
-			       String.IsNullOrEmpty(DisplayName) &&
-			       String.IsNullOrEmpty(ButtonStyle) &&
-			       String.IsNullOrEmpty(Icon) &&
+			return string.IsNullOrEmpty(Name) &&
+			       string.IsNullOrEmpty(DisplayName) &&
+			       string.IsNullOrEmpty(ButtonStyle) &&
+			       string.IsNullOrEmpty(Icon) &&
 			       !GroupBindings.Any() &&
 			       SetGroupsOnLogin == null &&
 			       (DefaultGroups == null || !DefaultGroups.Any()) &&
 			       DenyLocalLogin == null &&
 			       AutoRedirectLoginToExternalProvider == null &&
 			       Credentials == null;
+		}
+
+		public bool AllProfilesHaveName()
+		{
+			return Profiles != null && Profiles.All(x => !string.IsNullOrEmpty(x.Name));
 		}
 
 		public bool AllProfilesUnique()

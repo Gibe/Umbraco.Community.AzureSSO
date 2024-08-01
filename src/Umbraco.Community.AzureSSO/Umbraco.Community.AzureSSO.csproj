@@ -1,12 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFrameworks>net8.0;net7.0;net6.0</TargetFrameworks>
-    <Nullable>enable</Nullable>
-	  <PackageId>Umbraco.Community.AzureSSO</PackageId>
-	  <Version>2.0.0</Version>
-	  <Authors>Steve Temple</Authors>
-	  <Company>Gibe Digital</Company>
-	  <Product>Azure SSO for Umbraco</Product>
+	<PropertyGroup>
+		<TargetFrameworks>net8.0;net7.0;net6.0</TargetFrameworks>
+		<Nullable>enable</Nullable>
+		<PackageId>Umbraco.Community.AzureSSO</PackageId>
+		<Version>2.0.0</Version>
+		<Authors>Steve Temple</Authors>
+		<Company>Gibe Digital</Company>
+		<Product>Azure SSO for Umbraco</Product>
 		<ProjectUrl>https://github.com/Gibe/Umbraco.Community.AzureSSO</ProjectUrl>
 		<PackageTags>umbraco-marketplace;sso;azure-ad;aad</PackageTags>
 		<Copyright>Copyright (c) 2024 Gibe Digital Ltd</Copyright>
@@ -17,17 +17,18 @@
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<RepositoryUrl>https://github.com/Gibe/Umbraco.Community.AzureSSO</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
-  </PropertyGroup>
-  <ItemGroup>
-    <None Include="..\..\AzureSSO.jpg">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
-    <None Include="..\..\README.md">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
-  </ItemGroup>
+		<LangVersion>12.0</LangVersion>
+	</PropertyGroup>
+	<ItemGroup>
+		<None Include="..\..\AzureSSO.jpg">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+		<None Include="..\..\README.md">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Identity.Web" Version="2.16.0" />
 	</ItemGroup>
@@ -38,9 +39,9 @@
 		</PackageReference>
 	</ItemGroup>
 	<ItemGroup Condition="'$(TargetFramework)' == 'net7.0'">
-	  <PackageReference Include="Umbraco.Cms.Web.BackOffice">
-	    <Version>11.0.0</Version>
-	  </PackageReference>
+		<PackageReference Include="Umbraco.Cms.Web.BackOffice">
+			<Version>11.0.0</Version>
+		</PackageReference>
 	</ItemGroup>
 	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
 		<PackageReference Include="Umbraco.Cms.Web.BackOffice">

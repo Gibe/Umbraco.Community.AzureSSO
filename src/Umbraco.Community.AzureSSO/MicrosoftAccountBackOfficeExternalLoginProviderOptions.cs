@@ -2,27 +2,20 @@ using System.Linq;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
-using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Security;
 using Umbraco.Cms.Web.BackOffice.Security;
 using Umbraco.Community.AzureSSO.Settings;
 
 namespace Umbraco.Community.AzureSSO
 {
-	public class MicrosoftAccountBackOfficeExternalLoginProviderOptions : IConfigureNamedOptions<BackOfficeExternalLoginProviderOptions>
+	public class MicrosoftAccountBackOfficeExternalLoginProviderOptions(AzureSsoSettings settings)
+		: IConfigureNamedOptions<BackOfficeExternalLoginProviderOptions>
 	{
 		public const string SchemeName = "MicrosoftAccount";
 
-		private readonly AzureSsoSettings _settings;
-
-		public MicrosoftAccountBackOfficeExternalLoginProviderOptions(AzureSsoSettings settings)
-		{
-			_settings = settings;
-		}
-
 		public void Configure(string? name, BackOfficeExternalLoginProviderOptions options)
 		{
-			var profile = _settings.Profiles
+			var profile = settings.Profiles
 				.FirstOrDefault(x => x.Name == name);
 			if (profile == null)
 			{
