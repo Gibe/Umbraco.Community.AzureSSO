@@ -10,7 +10,7 @@ namespace Umbraco.Community.AzureSSO.HealthChecks
 	public class AzureSSOHealthCheck : HealthCheck
 	{
 		private const string HealthCheckId = "07F7DA0A-D351-4347-92B3-9B607E1D38BB";
-		private const string HealthCheckName = "Azure SSO Health Check";
+		private const string HealthCheckName = "Azure SSO";
 
 		private AzureSSOConfiguration _configuration;
 
@@ -25,6 +25,7 @@ namespace Umbraco.Community.AzureSSO.HealthChecks
 
 			if (!_configuration.IsValid())
 			{
+				// TODO : We really need specific feedback for this to be useful
 				statuses.Add(new HealthCheckStatus("Configuration Invalid.")
 				{
 					Description = "Check AzureSSO configuration",
