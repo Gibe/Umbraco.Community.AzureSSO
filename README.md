@@ -13,26 +13,26 @@ You'll need to configure the package by adding the following section to the root
 ```
 "AzureSSO": {
     "Credentials": {
-        "Instance": "https://login.microsoftonline.com/",
-        "Domain": "<domain>",
-        "TenantId": "<tenantId>",
-        "ClientId": "<clientId>",
-        "CallbackPath": "/umbraco-microsoft-signin/",
-        "SignedOutCallbackPath ": "/umbraco-microsoft-signout/",
-        "ClientSecret": "<clientSecret>"
+      "Instance": "https://login.microsoftonline.com/",
+      "Domain": "<domain>",
+      "TenantId": "<tenantId>",
+      "ClientId": "<clientId>",
+      "CallbackPath": "/umbraco-microsoft-signin/",
+      "SignedOutCallbackPath ": "/umbraco-microsoft-signout/",
+      "ClientSecret": "<clientSecret>"
     },
     "DisplayName": "Azure AD",
     "DenyLocalLogin": true,
     "AutoRedirectLoginToExternalProvider": true,
     "TokenCacheType": "InMemory",
     "GroupBindings": {
-        "<AD group>": "<umbraco group>",
-        "<another AD group>": "<umbraco group>"
+      "<AD group>": "<umbraco group>",
+      "<another AD group>": "<umbraco group>"
     },
     "SetGroupsOnLogin": true,
     "DefaultGroups": [
-		"editor"
-	],
+		  "editor"
+	  ],
     "Icon": "fa fa-lock",
     "ButtonStyle": "btn-microsoft",
 },
@@ -82,7 +82,77 @@ If you are having problems with NET BIOS group names, you can set the groups cla
 
 You can now use the guid format for the Group Id like: `"xxxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxx": "admin", "44a38651-xxxx-4c92-b1b6-51cf26ff9bab": "editor"`
 
+# Advanced usage
 
+## Multiple tenants
+
+If you'd like to use more than one tenant, or app registration then you can change the configuration to use profiles, see below.
+This could be used for having one SSO option for agency users and another for client users. 
+
+```
+"AzureSSO": {
+  "Profiles": [
+    {
+      "Name": "InternalAccount",
+      "Credentials": {
+        "Instance": "https://login.microsoftonline.com/",
+        "Domain": "<domain>",
+        "TenantId": "<tenantId>",
+        "ClientId": "<clientId>",
+        "CallbackPath": "/umbraco-microsoft-signin/",
+        "SignedOutCallbackPath ": "/umbraco-microsoft-signout/",
+        "ClientSecret": "<clientSecret>"
+      },
+      "DisplayName": "My AD",
+      "DenyLocalLogin": true,
+      "AutoRedirectLoginToExternalProvider": false,
+      "TokenCacheType": "InMemory",
+      "GroupBindings": {
+        "<AD group>": "<umbraco group>",
+        "<another AD group>": "<umbraco group>"
+      },
+      "SetGroupsOnLogin": true,
+      "DefaultGroups": [
+		    "editor"
+	    ],
+      "Icon": "fa fa-lock",
+      "ButtonStyle": "btn-microsoft",
+    },
+    {
+      "Name": "AlternateAccount",
+      "Credentials": {
+        "Instance": "https://login.microsoftonline.com/",
+        "Domain": "<domain>",
+        "TenantId": "<tenantId>",
+        "ClientId": "<clientId>",
+        "CallbackPath": "/umbraco-microsoft-alt-signin/",
+        "SignedOutCallbackPath ": "/umbraco-microsoft-alt-signout/",
+        "ClientSecret": "<clientSecret>"
+      },
+      "DisplayName": "My Client AD",
+      "DenyLocalLogin": true,
+      "AutoRedirectLoginToExternalProvider": false,
+      "TokenCacheType": "InMemory",
+      "GroupBindings": {
+        "<AD group>": "<umbraco group>",
+        "<another AD group>": "<umbraco group>"
+      },
+      "SetGroupsOnLogin": true,
+      "DefaultGroups": [
+		    "editor"
+	    ],
+      "Icon": "fa fa-lock",
+      "ButtonStyle": "btn-microsoft",
+    },
+  ]
+},
+```
+
+Each ClientId and ClientSecret should be different, also TentantId and domain should be different if using a different tenant.
+
+Please ensure that the CallbackPath and SignedOutCallbackPath are different for each profile.
+
+Note you cannot use AutoRedirectLoginToExternalProvider if you'd like 2 profiles.
 
 
 

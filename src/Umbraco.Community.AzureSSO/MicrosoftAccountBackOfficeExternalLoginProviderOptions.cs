@@ -1,39 +1,35 @@
+using System;
 using System.Linq;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
-using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Security;
 using Umbraco.Cms.Web.BackOffice.Security;
 using Umbraco.Community.AzureSSO.Settings;
 
 namespace Umbraco.Community.AzureSSO
 {
-	public class MicrosoftAccountBackOfficeExternalLoginProviderOptions : IConfigureNamedOptions<BackOfficeExternalLoginProviderOptions>
+	public class MicrosoftAccountBackOfficeExternalLoginProviderOptions(AzureSsoSettings settings)
+		: IConfigureNamedOptions<BackOfficeExternalLoginProviderOptions>
 	{
 		public const string SchemeName = "MicrosoftAccount";
 
-		private readonly AzureSsoSettings _settings;
-
-		public MicrosoftAccountBackOfficeExternalLoginProviderOptions(AzureSsoSettings settings)
-		{
-			_settings = settings;
-		}
-
 		public void Configure(string? name, BackOfficeExternalLoginProviderOptions options)
 		{
-			if (name != $"{Constants.Security.BackOfficeExternalAuthenticationTypePrefix}{SchemeName}")
+			var profile = settings.Profiles
+				.FirstOrDefault(x => x.Name == name);
+			if (profile == null)
 			{
 				return;
 			}
 
-			Configure(options);
+			Configure(options, profile);
 		}
 
-		public void Configure(BackOfficeExternalLoginProviderOptions options)
+		public void Configure(BackOfficeExternalLoginProviderOptions options, AzureSsoProfileSettings profileSettings)
 		{
-			options.ButtonStyle = _settings.ButtonStyle;
-			options.Icon = _settings.Icon;
+			options.ButtonStyle = profileSettings.ButtonStyle;
+			options.Icon = profileSettings.Icon;
 			options.AutoLinkOptions = new ExternalSignInAutoLinkOptions(
 					// must be true for auto-linking to be enabled
 					autoLinkExternalAccount: true,
@@ -62,15 +58,15 @@ namespace Umbraco.Community.AzureSSO
 				{
 					if (!autoLoginUser.IsApproved)
 					{
-						SetGroups(autoLoginUser, loginInfo);
+						SetGroups(autoLoginUser, loginInfo, profileSettings);
 						SetName(autoLoginUser, loginInfo);
 					}
 				},
 				OnExternalLogin = (user, loginInfo) =>
 				{
-					if (_settings.SetGroupsOnLogin)
+					if (profileSettings.SetGroupsOnLogin)
 					{
-						SetGroups(user, loginInfo);
+						SetGroups(user, loginInfo, profileSettings);
 					}
 					SetName(user, loginInfo);
 
@@ -82,29 +78,29 @@ namespace Umbraco.Community.AzureSSO
 			// to login with a username/password. If this is set
 			// to true, it will disable username/password login
 			// even if there are other external login providers installed.
-			options.DenyLocalLogin = _settings.DenyLocalLogin;
+			options.DenyLocalLogin = profileSettings.DenyLocalLogin;
 
 			// Optionally choose to automatically redirect to the
 			// external login provider so the user doesn't have
 			// to click the login button.
-			options.AutoRedirectLoginToExternalProvider = _settings.AutoRedirectLoginToExternalProvider;
+			options.AutoRedirectLoginToExternalProvider = profileSettings.AutoRedirectLoginToExternalProvider;
 		}
 
-		private void SetGroups(BackOfficeIdentityUser user, ExternalLoginInfo loginInfo)
+		private void SetGroups(BackOfficeIdentityUser user, ExternalLoginInfo loginInfo, AzureSsoProfileSettings settings)
 		{
 			user.Roles.Clear();
 
-			var groups = loginInfo.Principal.Claims.Where(c => _settings.GroupLookup.ContainsKey(c.Value));
+			var groups = loginInfo.Principal.Claims.Where(c => settings.GroupLookup.ContainsKey(c.Value));
 			foreach (var group in groups)
 			{
-				var umbracoGroups = _settings.GroupLookup[group.Value].Split(',');
+				var umbracoGroups = settings.GroupLookup[group.Value].Split(',');
 				foreach (var umbracoGroupAlias in umbracoGroups)
 				{
 					user.AddRole(umbracoGroupAlias);
 				}
 			}
 
-			foreach (var group in _settings.DefaultGroups)
+			foreach (var group in settings.DefaultGroups)
 			{
 				user.AddRole(group);
 			}
@@ -125,6 +121,12 @@ namespace Umbraco.Community.AzureSSO
 			var displayName = claimsPrincipal.FindFirstValue("name");
 
 			return !string.IsNullOrWhiteSpace(displayName) ? displayName : defaultValue;
+		}
+
+		public void Configure(BackOfficeExternalLoginProviderOptions options)
+		{
+			throw new NotImplementedException(
+				"Use Configure(BackOfficeExternalLoginProviderOptions, AzureSsoProfileSettings) instead");
 		}
 	}
 }
