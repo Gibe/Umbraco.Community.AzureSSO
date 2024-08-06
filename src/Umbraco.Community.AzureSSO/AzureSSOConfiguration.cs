@@ -35,6 +35,8 @@ namespace Umbraco.Community.AzureSSO
 
 		public bool IsValid()
 		{
+			// TODO : Make this give or log specific feedback before we do anything like prevent booting if misconfigured
+			//        and to make it more useful for the HealthCheck
 			return (Profiles != null && Profiles.Any() && AllValuesEmpty() && AllProfilesUnique() && AllProfilesHaveName()) ||
 			       (Profiles.IsNullOrEmpty() && Credentials != null && Credentials.IsValid());
 		}

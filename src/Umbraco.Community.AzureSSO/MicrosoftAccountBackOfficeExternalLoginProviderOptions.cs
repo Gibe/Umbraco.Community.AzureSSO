@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
@@ -25,10 +26,10 @@ namespace Umbraco.Community.AzureSSO
 			Configure(options, profile);
 		}
 
-		public void Configure(BackOfficeExternalLoginProviderOptions options, AzureSsoProfileSettings settings)
+		public void Configure(BackOfficeExternalLoginProviderOptions options, AzureSsoProfileSettings profileSettings)
 		{
-			options.ButtonStyle = settings.ButtonStyle;
-			options.Icon = settings.Icon;
+			options.ButtonStyle = profileSettings.ButtonStyle;
+			options.Icon = profileSettings.Icon;
 			options.AutoLinkOptions = new ExternalSignInAutoLinkOptions(
 					// must be true for auto-linking to be enabled
 					autoLinkExternalAccount: true,
@@ -57,15 +58,15 @@ namespace Umbraco.Community.AzureSSO
 				{
 					if (!autoLoginUser.IsApproved)
 					{
-						SetGroups(autoLoginUser, loginInfo, settings);
+						SetGroups(autoLoginUser, loginInfo, profileSettings);
 						SetName(autoLoginUser, loginInfo);
 					}
 				},
 				OnExternalLogin = (user, loginInfo) =>
 				{
-					if (settings.SetGroupsOnLogin)
+					if (profileSettings.SetGroupsOnLogin)
 					{
-						SetGroups(user, loginInfo, settings);
+						SetGroups(user, loginInfo, profileSettings);
 					}
 					SetName(user, loginInfo);
 
@@ -77,12 +78,12 @@ namespace Umbraco.Community.AzureSSO
 			// to login with a username/password. If this is set
 			// to true, it will disable username/password login
 			// even if there are other external login providers installed.
-			options.DenyLocalLogin = settings.DenyLocalLogin;
+			options.DenyLocalLogin = profileSettings.DenyLocalLogin;
 
 			// Optionally choose to automatically redirect to the
 			// external login provider so the user doesn't have
 			// to click the login button.
-			options.AutoRedirectLoginToExternalProvider = settings.AutoRedirectLoginToExternalProvider;
+			options.AutoRedirectLoginToExternalProvider = profileSettings.AutoRedirectLoginToExternalProvider;
 		}
 
 		private void SetGroups(BackOfficeIdentityUser user, ExternalLoginInfo loginInfo, AzureSsoProfileSettings settings)
@@ -124,7 +125,8 @@ namespace Umbraco.Community.AzureSSO
 
 		public void Configure(BackOfficeExternalLoginProviderOptions options)
 		{
-			// Unused
+			throw new NotImplementedException(
+				"Use Configure(BackOfficeExternalLoginProviderOptions, AzureSsoProfileSettings) instead");
 		}
 	}
 }
