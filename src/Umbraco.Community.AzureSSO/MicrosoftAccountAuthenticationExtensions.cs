@@ -16,7 +16,6 @@ namespace Umbraco.Community.AzureSSO
 		{
 			var azureSsoConfiguration = new AzureSSOConfiguration();
 			builder.Config.Bind(AzureSSOConfiguration.AzureSsoSectionName, azureSsoConfiguration);
-
 			builder.Services.AddSingleton<AzureSSOConfiguration>(conf => azureSsoConfiguration);
 			
 			var settings = new AzureSsoSettings(azureSsoConfiguration);
