@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Configuration;
 using Umbraco.Cms.Core.Composing;
 using Umbraco.Cms.Core.DependencyInjection;
 
@@ -7,7 +8,11 @@ namespace Umbraco.Community.AzureSSO
 	{
 		public void Compose(IUmbracoBuilder builder)
 		{
-			builder.AddMicrosoftAccountAuthentication();
+			var disableComposer = builder.Config.GetSection(AzureSSOConfiguration.AzureSsoSectionName).GetValue<bool>("DisableComposer");
+			if (!disableComposer)
+			{
+				builder.AddMicrosoftAccountAuthenticationInternal();
+			}
 		}
 	}
 }

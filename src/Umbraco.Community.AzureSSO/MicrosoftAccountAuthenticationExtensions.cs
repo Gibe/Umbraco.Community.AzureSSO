@@ -12,10 +12,11 @@ namespace Umbraco.Community.AzureSSO
 {
 	public static class MicrosoftAccountAuthenticationExtensions
 	{
-		internal static IUmbracoBuilder AddMicrosoftAccountAuthentication(this IUmbracoBuilder builder)
+		internal static IUmbracoBuilder AddMicrosoftAccountAuthenticationInternal(this IUmbracoBuilder builder)
 		{
 			var azureSsoConfiguration = new AzureSSOConfiguration();
 			builder.Config.Bind(AzureSSOConfiguration.AzureSsoSectionName, azureSsoConfiguration);
+
 			builder.Services.AddSingleton<AzureSSOConfiguration>(conf => azureSsoConfiguration);
 			
 			var settings = new AzureSsoSettings(azureSsoConfiguration);
@@ -54,6 +55,13 @@ namespace Umbraco.Community.AzureSSO
 			return builder;
 		}
 
+		public static IUmbracoBuilder AddMicrosoftAccountAuthentication(this IUmbracoBuilder builder)
+		{
+			var disableComposer = builder.Config.GetSection(AzureSSOConfiguration.AzureSsoSectionName).GetValue<bool>("DisableComposer");
+
+			// if composer is enabled don't add
+			return disableComposer ? builder.AddMicrosoftAccountAuthenticationInternal() : builder;
+		}
 		private static void CopyCredentials(MicrosoftIdentityOptions options, AzureSsoCredentialSettings settings)
 		{
 			options.Instance = settings.Instance;
