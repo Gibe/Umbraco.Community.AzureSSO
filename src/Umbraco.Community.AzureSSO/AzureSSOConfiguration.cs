@@ -1,7 +1,5 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.IdentityModel.Tokens;
 
 namespace Umbraco.Community.AzureSSO
 {
@@ -37,8 +35,8 @@ namespace Umbraco.Community.AzureSSO
 		{
 			// TODO : Make this give or log specific feedback before we do anything like prevent booting if misconfigured
 			//        and to make it more useful for the HealthCheck
-			return (Profiles != null && Profiles.Any() && AllValuesEmpty() && AllProfilesUnique() && AllProfilesHaveName()) ||
-			       (Profiles.IsNullOrEmpty() && Credentials != null && Credentials.IsValid());
+			return (Profiles?.Length > 0 && AllValuesEmpty() && AllProfilesUnique() && AllProfilesHaveName()) ||
+			       (!(Profiles?.Length > 0) && Credentials != null && Credentials.IsValid());
 		}
 
 		public bool AllValuesEmpty()
