@@ -10,20 +10,13 @@ using Umbraco.Community.AzureSSO.Settings;
 
 namespace Umbraco.Community.AzureSSO
 {
-	public class MicrosoftAccountBackOfficeExternalLoginProviderOptions(AzureSsoSettings settings)
+	public class MicrosoftAccountBackOfficeExternalLoginProviderOptions(
+			AzureSsoSettings settings,
+			ILogger<MicrosoftAccountBackOfficeExternalLoginProviderOptions> logger)
 		: IConfigureNamedOptions<BackOfficeExternalLoginProviderOptions>
 	{
 		public const string SchemeName = "MicrosoftAccount";
-
-		private readonly AzureSsoSettings _settings;
-		private readonly ILogger<MicrosoftAccountBackOfficeExternalLoginProviderOptions> _logger;
-
-		public MicrosoftAccountBackOfficeExternalLoginProviderOptions(AzureSsoSettings settings,
-																																	ILogger<MicrosoftAccountBackOfficeExternalLoginProviderOptions> logger)
-		{
-			_settings = settings;
-			_logger = logger;
-		}
+		
 
 		public void Configure(string? name, BackOfficeExternalLoginProviderOptions options)
 		{
@@ -101,7 +94,7 @@ namespace Umbraco.Community.AzureSSO
 		{
 			user.Roles.Clear();
 
-			var groups = loginInfo.Principal.Claims.Where(c => _settings.GroupLookup.ContainsKey(c.Value)).ToList();
+			var groups = loginInfo.Principal.Claims.Where(c => settings.GroupLookup.ContainsKey(c.Value)).ToList();
 
 			foreach (var group in groups)
 			{
@@ -117,12 +110,12 @@ namespace Umbraco.Community.AzureSSO
 				user.AddRole(group);
 			}
 
-			if (_settings.LogUnmappedRolesAsWarning)
+			if (settings.LogUnmappedRolesAsWarning)
 			{
-				var unmappedGroups = loginInfo.Principal.Claims.Where(c => !_settings.GroupLookup.ContainsKey(c.Value) && c.Value.Contains("\\")).Select(c => c.Value).ToList();
+				var unmappedGroups = loginInfo.Principal.Claims.Where(c => !settings.GroupLookup.ContainsKey(c.Value) && c.Value.Contains("\\")).Select(c => c.Value).ToList();
 				if (unmappedGroups.Any())
 				{
-					_logger.LogWarning("The following groups were not mapped to Umbraco roles: {Groups}", string.Join(", ", unmappedGroups));
+					logger.LogWarning("The following groups were not mapped to Umbraco roles: {Groups}", string.Join(", ", unmappedGroups));
 				}
 			}
 
