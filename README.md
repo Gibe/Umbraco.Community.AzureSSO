@@ -35,6 +35,7 @@ You'll need to configure the package by adding the following section to the root
 	  ],
     "Icon": "fa fa-lock",
     "ButtonStyle": "btn-microsoft",
+    "LogUnmappedRolesAsWarning": false
 },
 ```
 On Umbraco v13+ change the `Icon` to `"icon-microsoft-fill"`, i.e. `"Icon": "icon-microsoft-fill",`
@@ -165,6 +166,11 @@ i.e.
 	"DisableComposer": true
 }
 ```
+
+## LogUnmappedRolesAsWarning
+
+When `SetGroupsOnLogin` is set to true, if `LogUnmappedRolesAsWarning` is also set to true this will log as warning for unmapped Entra ID groups, where the Entra ID name has a slash `\` in it. Be design it does not log everything to prevent logging of email addresses and so on.
+
 
 
 

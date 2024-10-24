@@ -18,6 +18,8 @@ namespace Umbraco.Community.AzureSSO
 		public Dictionary<string, string> GroupBindings { get; set; } = new();
 
 		public bool? SetGroupsOnLogin { get; set; }
+    
+		public bool? LogUnmappedRolesAsWarning { get; set; }
 
 		public string[]? DefaultGroups { get; set; }
 

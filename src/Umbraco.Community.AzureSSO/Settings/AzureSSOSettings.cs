@@ -16,7 +16,6 @@ namespace Umbraco.Community.AzureSSO.Settings
 
 			Profiles = configuration.Profiles.Select(x => new AzureSsoProfileSettings(x)).ToArray();
 		}
-
 		public AzureSsoProfileSettings[] Profiles { get; }
 	}
 
@@ -28,6 +27,7 @@ namespace Umbraco.Community.AzureSSO.Settings
 		public string Icon => configuration.Icon ?? "fa fa-lock";
 		public Dictionary<string, string> GroupLookup => configuration.GroupBindings;
 		public bool SetGroupsOnLogin => configuration.SetGroupsOnLogin ?? true;
+    public bool LogUnmappedRolesAsWarning => _configuration.LogUnmappedRolesAsWarning ?? false;
 		public string[] DefaultGroups => configuration.DefaultGroups ?? System.Array.Empty<string>();
 		public bool DenyLocalLogin => configuration.DenyLocalLogin ?? false;
 		public TokenCacheType TokenCacheType => configuration.TokenCacheType;
