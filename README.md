@@ -167,6 +167,8 @@ i.e.
 }
 ```
 
+In which case you'll need to add `AddMicrosoftAccountAuthentication()` to your ConfigureServices function
+
 ## LogUnmappedRolesAsWarning
 
 When `SetGroupsOnLogin` is set to true, if `LogUnmappedRolesAsWarning` is also set to true this will log as warning for unmapped Entra ID groups, where the Entra ID name has a slash `\` in it. Be design it does not log everything to prevent logging of email addresses and so on.
