@@ -13,26 +13,26 @@ You'll need to configure the package by adding the following section to the root
 ```
 "AzureSSO": {
     "Credentials": {
-        "Instance": "https://login.microsoftonline.com/",
-        "Domain": "<domain>",
-        "TenantId": "<tenantId>",
-        "ClientId": "<clientId>",
-        "CallbackPath": "/umbraco-microsoft-signin/",
-        "SignedOutCallbackPath ": "/umbraco-microsoft-signout/",
-        "ClientSecret": "<clientSecret>"
+      "Instance": "https://login.microsoftonline.com/",
+      "Domain": "<domain>",
+      "TenantId": "<tenantId>",
+      "ClientId": "<clientId>",
+      "CallbackPath": "/umbraco-microsoft-signin/",
+      "SignedOutCallbackPath ": "/umbraco-microsoft-signout/",
+      "ClientSecret": "<clientSecret>"
     },
     "DisplayName": "Azure AD",
     "DenyLocalLogin": true,
     "AutoRedirectLoginToExternalProvider": true,
     "TokenCacheType": "InMemory",
     "GroupBindings": {
-        "<AD group>": "<umbraco group>",
-        "<another AD group>": "<umbraco group>"
+      "<AD group>": "<umbraco group>",
+      "<another AD group>": "<umbraco group>"
     },
     "SetGroupsOnLogin": true,
     "DefaultGroups": [
-		"editor"
-	],
+		  "editor"
+	  ],
     "Icon": "fa fa-lock",
     "ButtonStyle": "btn-microsoft",
     "LogUnmappedRolesAsWarning": false
@@ -71,7 +71,7 @@ The standard set is shown at https://lipis.github.io/bootstrap-social/
 
 To bind these you'll need to specify the Entra ID group and then the matching Umbraco group.
 
-For example we use: `"GIBE\Producers" : "editors"` to bind everyone in the `GIBE\Producers` group to the Umbraco editors group. 
+For example we use: `"GIBE\Producers" : "editors"` to bind everyone in the `GIBE\Producers` group to the Umbraco editors group using the Umbraco Alias for the group.  The Umbraco Alias for a group is displayed to the right of the group name in the User Group editor view.
 
 Beware these will be reset on each login, so changing groups in umbraco will only take effect until the user next logs in. If a user is removed from an AD group they'll automatically be removed from the matching Umbraco group on next login.
 
@@ -83,10 +83,94 @@ If you are having problems with NET BIOS group names, you can set the groups cla
 
 You can now use the guid format for the Group Id like: `"xxxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxx": "admin", "44a38651-xxxx-4c92-b1b6-51cf26ff9bab": "editor"`
 
+=======
+# Advanced usage
+
+## Multiple tenants
+
+If you'd like to use more than one tenant, or app registration then you can change the configuration to use profiles, see below.
+This could be used for having one SSO option for agency users and another for client users. 
+
+```
+"AzureSSO": {
+  "Profiles": [
+    {
+      "Name": "InternalAccount",
+      "Credentials": {
+        "Instance": "https://login.microsoftonline.com/",
+        "Domain": "<domain>",
+        "TenantId": "<tenantId>",
+        "ClientId": "<clientId>",
+        "CallbackPath": "/umbraco-microsoft-signin/",
+        "SignedOutCallbackPath ": "/umbraco-microsoft-signout/",
+        "ClientSecret": "<clientSecret>"
+      },
+      "DisplayName": "My AD",
+      "DenyLocalLogin": true,
+      "AutoRedirectLoginToExternalProvider": false,
+      "TokenCacheType": "InMemory",
+      "GroupBindings": {
+        "<AD group>": "<umbraco group>",
+        "<another AD group>": "<umbraco group>"
+      },
+      "SetGroupsOnLogin": true,
+      "DefaultGroups": [
+		    "editor"
+	    ],
+      "Icon": "fa fa-lock",
+      "ButtonStyle": "btn-microsoft",
+    },
+    {
+      "Name": "AlternateAccount",
+      "Credentials": {
+        "Instance": "https://login.microsoftonline.com/",
+        "Domain": "<domain>",
+        "TenantId": "<tenantId>",
+        "ClientId": "<clientId>",
+        "CallbackPath": "/umbraco-microsoft-alt-signin/",
+        "SignedOutCallbackPath ": "/umbraco-microsoft-alt-signout/",
+        "ClientSecret": "<clientSecret>"
+      },
+      "DisplayName": "My Client AD",
+      "DenyLocalLogin": true,
+      "AutoRedirectLoginToExternalProvider": false,
+      "TokenCacheType": "InMemory",
+      "GroupBindings": {
+        "<AD group>": "<umbraco group>",
+        "<another AD group>": "<umbraco group>"
+      },
+      "SetGroupsOnLogin": true,
+      "DefaultGroups": [
+		    "editor"
+	    ],
+      "Icon": "fa fa-lock",
+      "ButtonStyle": "btn-microsoft",
+    },
+  ]
+},
+```
+
+Each ClientId and ClientSecret should be different, also TentantId and domain should be different if using a different tenant.
+
+Please ensure that the CallbackPath and SignedOutCallbackPath are different for each profile.
+
+Note you cannot use AutoRedirectLoginToExternalProvider if you'd like 2 profiles.
+
+## Manually composing
+
+If you'd like to disable the composer and configure it yourself you can add `DisableComposer` to the settings and set it's value to `true`
+
+i.e.
+```
+"AzureSSO": {
+	/// All the other configuration
+	"DisableComposer": true
+}
+```
+
 ## LogUnmappedRolesAsWarning
 
 When `SetGroupsOnLogin` is set to true, if `LogUnmappedRolesAsWarning` is also set to true this will log as warning for unmapped Entra ID groups, where the Entra ID name has a slash `\` in it. Be design it does not log everything to prevent logging of email addresses and so on.
-
 
 
 
