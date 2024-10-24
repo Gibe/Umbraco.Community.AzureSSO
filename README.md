@@ -83,7 +83,6 @@ If you are having problems with NET BIOS group names, you can set the groups cla
 
 You can now use the guid format for the Group Id like: `"xxxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxx": "admin", "44a38651-xxxx-4c92-b1b6-51cf26ff9bab": "editor"`
 
-=======
 # Advanced usage
 
 ## Multiple tenants
