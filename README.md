@@ -154,5 +154,17 @@ Please ensure that the CallbackPath and SignedOutCallbackPath are different for 
 
 Note you cannot use AutoRedirectLoginToExternalProvider if you'd like 2 profiles.
 
+## Manually composing
+
+If you'd like to disable the composer and configure it yourself you can add `DisableComposer` to the settings and set it's value to `true`
+
+i.e.
+```
+"AzureSSO": {
+	/// All the other configuration
+	"DisableComposer": true
+}
+```
+
 
 
