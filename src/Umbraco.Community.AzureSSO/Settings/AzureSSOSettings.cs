@@ -21,7 +21,7 @@ namespace Umbraco.Community.AzureSSO.Settings
 
 	public class AzureSsoProfileSettings(AzureSSOConfiguration configuration)
 	{
-		public string Name => $"{Constants.Security.BackOfficeExternalAuthenticationTypePrefix}{configuration.Name}" ?? MicrosoftAccountBackOfficeExternalLoginProviderOptions.SchemeName;
+		public string Name => $"{Constants.Security.BackOfficeExternalAuthenticationTypePrefix}" + (string.IsNullOrEmpty(configuration.Name) ? MicrosoftAccountBackOfficeExternalLoginProviderOptions.SchemeName : configuration.Name);
 		public string? DisplayName => configuration.DisplayName;
 		public string ButtonStyle => configuration.ButtonStyle ?? "btn-microsoft";
 		public string Icon => configuration.Icon ?? "fa fa-lock";

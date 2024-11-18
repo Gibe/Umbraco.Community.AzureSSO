@@ -4,9 +4,17 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Security;
-using Umbraco.Cms.Web.BackOffice.Security;
+
 using Umbraco.Community.AzureSSO.Settings;
+#if NEW_BACKOFFICE
+using Umbraco.Cms.Api.Management.Security;
+#endif
+#if OLD_BACKOFFICE
+using Umbraco.Cms.Web.BackOffice.Security;
+#endif
+
 
 namespace Umbraco.Community.AzureSSO
 {
@@ -32,8 +40,10 @@ namespace Umbraco.Community.AzureSSO
 
 		public void Configure(BackOfficeExternalLoginProviderOptions options, AzureSsoProfileSettings profileSettings)
 		{
+#if OLD_BACKOFFICE
 			options.ButtonStyle = profileSettings.ButtonStyle;
 			options.Icon = profileSettings.Icon;
+#endif
 			options.AutoLinkOptions = new ExternalSignInAutoLinkOptions(
 					// must be true for auto-linking to be enabled
 					autoLinkExternalAccount: true,
@@ -84,10 +94,12 @@ namespace Umbraco.Community.AzureSSO
 			// even if there are other external login providers installed.
 			options.DenyLocalLogin = profileSettings.DenyLocalLogin;
 
+#if OLD_BACKOFFICE
 			// Optionally choose to automatically redirect to the
 			// external login provider so the user doesn't have
 			// to click the login button.
 			options.AutoRedirectLoginToExternalProvider = profileSettings.AutoRedirectLoginToExternalProvider;
+#endif
 		}
 
 		private void SetGroups(BackOfficeIdentityUser user, ExternalLoginInfo loginInfo, AzureSsoProfileSettings settings)

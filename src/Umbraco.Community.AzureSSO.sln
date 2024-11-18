@@ -7,8 +7,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Umbraco.Community.AzureSSO"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{38BF936C-2E21-4AD8-8BBD-B946FEAA91A4}"
 	ProjectSection(SolutionItems) = preProject
-		..\LICENSE = ..\LICENSE
 		..\EntraIDSetup.md = ..\EntraIDSetup.md
+		..\LICENSE = ..\LICENSE
+		..\README-v13.md = ..\README-v13.md
+		..\README-v14plus.md = ..\README-v14plus.md
+		..\README-uptov12.md = ..\README-uptov12.md
 		..\README.md = ..\README.md
 		..\umbraco-marketplace.json = ..\umbraco-marketplace.json
 	EndProjectSection
