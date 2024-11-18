@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Security;
@@ -18,13 +17,10 @@ using Umbraco.Cms.Web.BackOffice.Security;
 
 namespace Umbraco.Community.AzureSSO
 {
-	public class MicrosoftAccountBackOfficeExternalLoginProviderOptions(
-			AzureSsoSettings settings,
-			ILogger<MicrosoftAccountBackOfficeExternalLoginProviderOptions> logger)
+	public class MicrosoftAccountBackOfficeExternalLoginProviderOptions(AzureSsoSettings settings)
 		: IConfigureNamedOptions<BackOfficeExternalLoginProviderOptions>
 	{
 		public const string SchemeName = "MicrosoftAccount";
-		
 
 		public void Configure(string? name, BackOfficeExternalLoginProviderOptions options)
 		{
@@ -106,8 +102,7 @@ namespace Umbraco.Community.AzureSSO
 		{
 			user.Roles.Clear();
 
-			var groups = loginInfo.Principal.Claims.Where(c => settings.GroupLookup.ContainsKey(c.Value)).ToList();
-
+			var groups = loginInfo.Principal.Claims.Where(c => settings.GroupLookup.ContainsKey(c.Value));
 			foreach (var group in groups)
 			{
 				var umbracoGroups = settings.GroupLookup[group.Value].Split(',');
@@ -121,16 +116,6 @@ namespace Umbraco.Community.AzureSSO
 			{
 				user.AddRole(group);
 			}
-
-			if (settings.LogUnmappedRolesAsWarning)
-			{
-				var unmappedGroups = loginInfo.Principal.Claims.Where(c => !settings.GroupLookup.ContainsKey(c.Value) && c.Value.Contains("\\")).Select(c => c.Value).ToList();
-				if (unmappedGroups.Any())
-				{
-					logger.LogWarning("The following groups were not mapped to Umbraco roles: {Groups}", string.Join(", ", unmappedGroups));
-				}
-			}
-
 		}
 
 		private void SetName(BackOfficeIdentityUser user, ExternalLoginInfo loginInfo)

@@ -4,10 +4,13 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Identity.Client;
 using Microsoft.Identity.Web;
-using Umbraco.Cms.Api.Management.Security;
 using Umbraco.Cms.Core.DependencyInjection;
+using Umbraco.Cms.Web.BackOffice.Security;
 using Umbraco.Community.AzureSSO.Settings;
 using Umbraco.Extensions;
+#if NEW_BACKOFFICE
+using Umbraco.Cms.Api.Management.Security;
+#endif
 
 namespace Umbraco.Community.AzureSSO
 {
@@ -34,13 +37,13 @@ namespace Umbraco.Community.AzureSSO
 								backOfficeAuthenticationBuilder.AddMicrosoftIdentityWebApp(options =>
 										{
 											CopyCredentials(options, profile.Credentials);
-											options.SignInScheme = SchemeForBackOffice(profile.Name);
+											options.SignInScheme = SchemeForBackOffice(profile.Name, backOfficeAuthenticationBuilder);
 											options.Events = new OpenIdConnectEvents();
 
 										},
 										displayName: profile.DisplayName ?? "Microsoft Entra ID",
 										cookieScheme: $"{profile.Name}Cookies",
-										openIdConnectScheme: SchemeForBackOffice(profile.Name) ??
+										openIdConnectScheme: SchemeForBackOffice(profile.Name, backOfficeAuthenticationBuilder) ??
 																				 String.Empty)
 									.EnableTokenAcquisitionToCallDownstreamApi(
 										options => CopyCredentials(options, profile.Credentials),
@@ -63,7 +66,7 @@ namespace Umbraco.Community.AzureSSO
 			return disableComposer ? builder.AddMicrosoftAccountAuthenticationInternal() : builder;
 		}
         
-		private static string? SchemeForBackOffice(string name)
+		private static string? SchemeForBackOffice(string name, BackOfficeAuthenticationBuilder backOfficeAuthenticationBuilder)
 		{
 #if OLD_BACKOFFICE
 			return backOfficeAuthenticationBuilder.SchemeForBackOffice(name);

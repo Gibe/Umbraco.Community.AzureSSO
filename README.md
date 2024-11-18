@@ -8,10 +8,30 @@ To install:
 
 `dotnet add package Umbraco.Community.AzureSSO`
 
-## Setup
+## Advanced usage
+
+### Setup
 
 Select the instructions for your Umbraco version
 
 [v10-12](README-uptov12.md)
 [v13](README-v13.md)
 [v14+](README-v14plus.md)
+
+### Manually composing
+
+If you'd like to disable the composer and configure it yourself you can add DisableComposer to the settings and set it's value to true
+
+i.e.
+
+"AzureSSO": {
+	/// All the other configuration
+	"DisableComposer": true
+}
+
+In which case you'll need to add AddMicrosoftAccountAuthentication() to your ConfigureServices function
+
+##
+
+LogUnmappedRolesAsWarning
+When SetGroupsOnLogin is set to true, if LogUnmappedRolesAsWarning is also set to true this will log as warning for unmapped Entra ID groups, where the Entra ID name has a slash \ in it. Be design it does not log everything to prevent logging of email addresses and so on.
