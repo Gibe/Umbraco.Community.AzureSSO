@@ -1,0 +1,31 @@
+{
+	"$schema": "../../umbraco-package-schema.json",
+	"name": "AzureSSO",
+	"allowPublicAccess": true,
+	"extensions": [
+		{
+			"type": "authProvider",
+			"alias": "Umbraco.Community.AzureSSO",
+			"name": "AzureSSO",
+			"forProviderName": "Umbraco.MicrosoftAccount",
+			"meta": {
+				"label": "Entra ID",
+				"defaultView": {
+					"icon": "azureSSO-entraid"
+				},
+				"behavior": {
+					"autoRedirect": true
+				},
+				"linking": {
+					"allowManualLinking": false
+				}
+			}
+		},
+		{
+			"type": "icons",
+			"alias": "Umbraco.Community.AzureSSO.Icons",
+			"name": "AzureSSO Icons",
+			"js": "/App_Plugins/AzureSSO/Icons/icons.js"
+		}
+	]
+}
