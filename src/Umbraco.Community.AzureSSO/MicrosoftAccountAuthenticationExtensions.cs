@@ -5,11 +5,15 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Identity.Client;
 using Microsoft.Identity.Web;
 using Umbraco.Cms.Core.DependencyInjection;
-using Umbraco.Cms.Web.BackOffice.Security;
 using Umbraco.Community.AzureSSO.Settings;
 using Umbraco.Extensions;
+
 #if NEW_BACKOFFICE
 using Umbraco.Cms.Api.Management.Security;
+using Umbraco.Cms.Infrastructure.Manifest;
+#endif
+#if OLD_BACKOFFICE
+using Umbraco.Cms.Web.BackOffice.Security;
 #endif
 
 namespace Umbraco.Community.AzureSSO
@@ -26,6 +30,9 @@ namespace Umbraco.Community.AzureSSO
 			builder.Services.AddSingleton<AzureSsoSettings>(conf => settings);
 			builder.Services.ConfigureOptions<MicrosoftAccountBackOfficeExternalLoginProviderOptions>();
 
+#if NEW_BACKOFFICE
+			builder.Services.AddSingleton<IPackageManifestReader, AzureSsoManifestReader>();
+#endif
 			var initialScopes = Array.Empty<string>();
 			builder.AddBackOfficeExternalLogins(logins =>
 				{
