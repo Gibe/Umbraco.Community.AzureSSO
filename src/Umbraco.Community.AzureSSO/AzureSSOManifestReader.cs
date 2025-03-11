@@ -26,7 +26,8 @@ namespace Umbraco.Community.AzureSSO
 						var buttonStyle = profile.ButtonStyle.Split('-');
 						look = buttonStyle[0];
 						color = buttonStyle[1];
-					} else if (profile.ButtonStyle != "btn-microsoft")
+					}
+					else if (profile.ButtonStyle != "btn-microsoft")
 					{
 						look = profile.ButtonStyle;
 					}
