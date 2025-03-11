@@ -26,6 +26,7 @@ You'll need to configure the package by adding the following section to the root
 		  "editor"
 	  ],
     "LogUnmappedRolesAsWarning": false
+    "Icon": "icon-cloudy"
 },
 ```
 
@@ -55,7 +56,7 @@ You can also customise the configuration by setting these settings:
 
 To bind these you'll need to specify the Entra ID group and then the matching Umbraco group.
 
-For example we use: `"GIBE\Producers" : "editors"` to bind everyone in the `GIBE\Producers` group to the Umbraco editors group. 
+For example we use: `"GIBE\Producers" : "editor"` to bind everyone in the `GIBE\Producers` group to the Umbraco editors group. 
 
 Beware these will be reset on each login, so changing groups in umbraco will only take effect until the user next logs in. If a user is removed from an AD group they'll automatically be removed from the matching Umbraco group on next login.
 
@@ -100,7 +101,7 @@ This could be used for having one SSO option for agency users and another for cl
       "DefaultGroups": [
 		    "editor"
 	    ],
-      "Icon": "fa fa-lock",
+      "Icon": "icon-cloudy",
       "ButtonStyle": "btn-microsoft",
     },
     {
@@ -126,7 +127,7 @@ This could be used for having one SSO option for agency users and another for cl
       "DefaultGroups": [
 		    "editor"
 	    ],
-      "Icon": "fa fa-lock",
+      "Icon": "icon-cloudy",
       "ButtonStyle": "btn-microsoft",
     },
   ]
@@ -136,8 +137,6 @@ This could be used for having one SSO option for agency users and another for cl
 Each ClientId and ClientSecret should be different, also TentantId and domain should be different if using a different tenant.
 
 Please ensure that the CallbackPath and SignedOutCallbackPath are different for each profile.
-
-Note you cannot use AutoRedirectLoginToExternalProvider if you'd like 2 profiles.
 
 > [!NOTE]
 > Note you cannot use AutoRedirectLoginToExternalProvider if you'd like 2 profiles.
