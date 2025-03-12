@@ -16,7 +16,7 @@ Select the instructions for your Umbraco version
 
 [v10-12](README-uptov12.md)
 [v13](README-v13.md)
-[v14+](README-v14plus.md)
+[v15+](README-v15plus.md)
 
 ### Manually composing
 
