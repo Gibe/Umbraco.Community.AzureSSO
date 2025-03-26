@@ -14,6 +14,7 @@ You'll need to configure the package by adding the following section to the root
       "ClientSecret": "<clientSecret>"
     },
     "DisplayName": "Azure AD",
+    "Enabled": true,
     "DenyLocalLogin": true,
     "AutoRedirectLoginToExternalProvider": true,
     "TokenCacheType": "InMemory",
@@ -54,6 +55,7 @@ You can also customise the configuration by setting these settings:
 | TokenCacheType                        | Token Cache Type to use: InMemory, Session, Distributed (defaults to InMemory)               |
 | DefaultGroups                         | The groups to assign to users regardless of any Entry ID groups assigned (defaults to none)  |
 | LogUnmappedRolesAsWarning             | Log any roles in Entra ID that aren't mapped as warnings for debugging purposes              |
+| Enabled															  | Set to false to disable SSO                                                                  |
 
 ## ButtonStyle
 
@@ -97,6 +99,7 @@ This could be used for having one SSO option for agency users and another for cl
         "ClientSecret": "<clientSecret>"
       },
       "DisplayName": "My AD",
+      "Enabled": true,
       "DenyLocalLogin": true,
       "AutoRedirectLoginToExternalProvider": false,
       "TokenCacheType": "InMemory",
@@ -123,6 +126,7 @@ This could be used for having one SSO option for agency users and another for cl
         "ClientSecret": "<clientSecret>"
       },
       "DisplayName": "My Client AD",
+      "Enabled": true,
       "DenyLocalLogin": true,
       "AutoRedirectLoginToExternalProvider": false,
       "TokenCacheType": "InMemory",
