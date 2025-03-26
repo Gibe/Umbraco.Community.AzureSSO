@@ -8,8 +8,6 @@ To install:
 
 `dotnet add package Umbraco.Community.AzureSSO`
 
-## Advanced usage
-
 ### Setup
 
 Select the instructions for your Umbraco version
@@ -17,6 +15,8 @@ Select the instructions for your Umbraco version
 [v10-12](README-uptov12.md)
 [v13](README-v13.md)
 [v15+](README-v15plus.md)
+
+## Advanced usage
 
 ### Manually composing
 
@@ -31,7 +31,7 @@ i.e.
 
 In which case you'll need to add AddMicrosoftAccountAuthentication() to your ConfigureServices function
 
-##
+### Debugging
 
 LogUnmappedRolesAsWarning
 When SetGroupsOnLogin is set to true, if LogUnmappedRolesAsWarning is also set to true this will log as warning for unmapped Entra ID groups, where the Entra ID name has a slash \ in it. Be design it does not log everything to prevent logging of email addresses and so on.

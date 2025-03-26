@@ -32,6 +32,9 @@ namespace Umbraco.Community.AzureSSO
 		public AzureSSOCredentials? Credentials { get; set; }
 
 		public AzureSSOConfiguration[]? Profiles { get; set; }
+
+		public bool Enabled { get; set; } = true;
+
 		public bool DisableComposer { get; set; } = false;
 
 		public bool IsValid()

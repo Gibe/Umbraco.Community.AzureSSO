@@ -33,30 +33,34 @@ namespace Umbraco.Community.AzureSSO
 #if NEW_BACKOFFICE
 			builder.Services.AddSingleton<IPackageManifestReader, AzureSsoManifestReader>();
 #endif
+
 			var initialScopes = Array.Empty<string>();
 			builder.AddBackOfficeExternalLogins(logins =>
 				{
 					foreach (var profile in settings.Profiles)
 					{
-						logins.AddBackOfficeLogin(
-							backOfficeAuthenticationBuilder =>
-							{
-								backOfficeAuthenticationBuilder.AddMicrosoftIdentityWebApp(options =>
-										{
-											CopyCredentials(options, profile.Credentials);
-											options.SignInScheme = SchemeForBackOffice(profile.Name, backOfficeAuthenticationBuilder);
-											options.Events = new OpenIdConnectEvents();
+						if (profile.Enabled)
+						{
+							logins.AddBackOfficeLogin(
+								backOfficeAuthenticationBuilder =>
+								{
+									backOfficeAuthenticationBuilder.AddMicrosoftIdentityWebApp(options =>
+											{
+												CopyCredentials(options, profile.Credentials);
+												options.SignInScheme = SchemeForBackOffice(profile.Name, backOfficeAuthenticationBuilder);
+												options.Events = new OpenIdConnectEvents();
 
-										},
-										displayName: profile.DisplayName ?? "Microsoft Entra ID",
-										cookieScheme: $"{profile.Name}Cookies",
-										openIdConnectScheme: SchemeForBackOffice(profile.Name, backOfficeAuthenticationBuilder) ??
-																				 String.Empty)
-									.EnableTokenAcquisitionToCallDownstreamApi(
-										options => CopyCredentials(options, profile.Credentials),
-										initialScopes)
-									.AddTokenCaches(profile.TokenCacheType);
-							});
+											},
+											displayName: profile.DisplayName ?? "Microsoft Entra ID",
+											cookieScheme: $"{profile.Name}Cookies",
+											openIdConnectScheme: SchemeForBackOffice(profile.Name, backOfficeAuthenticationBuilder) ??
+											                     String.Empty)
+										.EnableTokenAcquisitionToCallDownstreamApi(
+											options => CopyCredentials(options, profile.Credentials),
+											initialScopes)
+										.AddTokenCaches(profile.TokenCacheType);
+								});
+						}
 					}
 				}
 
