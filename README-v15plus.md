@@ -19,7 +19,7 @@ You'll need to configure the package by adding the following section to the root
     "TokenCacheType": "InMemory",
     "GroupBindings": {
       "<AD group>": "<umbraco group>",
-      "<another AD group>": "<umbraco group>"
+      "<another AD group>": "<umbraco group>,<another umbraco group>"
     },
     "SetGroupsOnLogin": true,
     "DefaultGroups": [
@@ -121,7 +121,7 @@ This could be used for having one SSO option for agency users and another for cl
       "TokenCacheType": "InMemory",
       "GroupBindings": {
         "<AD group>": "<umbraco group>",
-        "<another AD group>": "<umbraco group>"
+        "<another AD group>": "<umbraco group>,<another umbraco group>"
       },
       "SetGroupsOnLogin": true,
       "DefaultGroups": [
