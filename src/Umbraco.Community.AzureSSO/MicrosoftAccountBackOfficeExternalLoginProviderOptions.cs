@@ -24,6 +24,7 @@ namespace Umbraco.Community.AzureSSO
 
 		public void Configure(string? name, BackOfficeExternalLoginProviderOptions options)
 		{
+			
 			var profile = settings.Profiles
 				.FirstOrDefault(x => x.Name == name);
 			if (profile == null)
