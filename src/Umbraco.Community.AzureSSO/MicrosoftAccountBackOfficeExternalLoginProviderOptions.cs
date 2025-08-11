@@ -81,7 +81,7 @@ namespace Umbraco.Community.AzureSSO
 					}
 					SetName(user, loginInfo);
 
-					if(user.Roles.Any())
+					if (user.Roles.Any())
 					{
 						return true;
 					}
