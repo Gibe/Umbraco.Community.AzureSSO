@@ -84,7 +84,12 @@ namespace Umbraco.Community.AzureSSO
 					}
 					SetName(user, loginInfo);
 
-					return true; //returns a boolean indicating if sign in should continue or not.
+					if(user.Roles.Any())
+					{
+						return true;
+					}
+
+					return false; // Stop login if the user has no roles assigned
 				}
 			};
 
@@ -123,7 +128,7 @@ namespace Umbraco.Community.AzureSSO
 
 			if (settings.LogUnmappedRolesAsWarning)
 			{
-				var unmappedGroups = loginInfo.Principal.Claims.Where(c => !settings.GroupLookup.ContainsKey(c.Value) && c.Value.Contains("\\")).Select(c => c.Value).ToList();
+				var unmappedGroups = loginInfo.Principal.Claims.Where(c => !settings.GroupLookup.ContainsKey(c.Value)).Select(c => c.Value).ToArray();
 				if (unmappedGroups.Any())
 				{
 					logger.LogWarning("The following groups were not mapped to Umbraco roles: {Groups}", string.Join(", ", unmappedGroups));
