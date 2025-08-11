@@ -69,13 +69,17 @@ For example we use: `"GIBE\Producers" : "editors"` to bind everyone in the `GIBE
 
 Beware these will be reset on each login, so changing groups in umbraco will only take effect until the user next logs in. If a user is removed from an AD group they'll automatically be removed from the matching Umbraco group on next login.
 
-## Alternate Group Bindings using Group Id
+### Alternate Group Bindings using Group Id
 
 If you are having problems with NET BIOS group names, you can set the groups claim in the App Registration to use Group Id rather than NetBIOSDomain\sAMAccountName
 
 ![image](https://user-images.githubusercontent.com/1257752/235880241-4381fa6e-d72d-494e-bd3f-1ceaf8b4e71d.png)
 
 You can now use the guid format for the Group Id like: `"xxxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxx": "admin", "44a38651-xxxx-4c92-b1b6-51cf26ff9bab": "editor"`
+
+### Binding one group to multiple Umbraco groups
+
+You can bind one Entra ID group to multiple Umbraco groups by including a comma separated list of groups. For example: `"GIBE\Producers" : "editors, writers"` will bind the `GIBE\Producers` group to both the `editors` and `writers` Umbraco groups.
 
 # Advanced usage
 
