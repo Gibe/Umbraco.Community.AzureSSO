@@ -81,7 +81,12 @@ namespace Umbraco.Community.AzureSSO
 					}
 					SetName(user, loginInfo);
 
-					return true; //returns a boolean indicating if sign in should continue or not.
+					if(user.Roles.Any())
+					{
+						return true;
+					}
+
+					return false; // Stop login if the user has no roles assigned
 				}
 			};
 
