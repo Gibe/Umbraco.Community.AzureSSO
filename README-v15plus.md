@@ -52,7 +52,7 @@ You can also customise the configuration by setting these settings:
 | TokenCacheType                        | Token Cache Type to use: InMemory, Session, Distributed (defaults to InMemory)               |
 | DefaultGroups                         | The groups to assign to users regardless of any Entry ID groups assigned (defaults to none)  |
 | LogUnmappedRolesAsWarning             | Log any roles in Entra ID that aren't mapped as warnings for debugging purposes              |
-| Enabled															  | Set to false to disable SSO                                                                  |
+| Enabled                               | Set to false to disable SSO                                                                  |
 
 ## Group Bindings
 
