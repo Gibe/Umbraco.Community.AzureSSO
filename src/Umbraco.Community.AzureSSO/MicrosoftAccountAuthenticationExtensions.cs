@@ -25,7 +25,7 @@ namespace Umbraco.Community.AzureSSO
 			var azureSsoConfiguration = new AzureSSOConfiguration();
 			builder.Config.Bind(AzureSSOConfiguration.AzureSsoSectionName, azureSsoConfiguration);
 			builder.Services.AddSingleton<AzureSSOConfiguration>(conf => azureSsoConfiguration);
-			
+
 			var settings = new AzureSsoSettings(azureSsoConfiguration);
 			builder.Services.AddSingleton<AzureSsoSettings>(conf => settings);
 			builder.Services.ConfigureOptions<MicrosoftAccountBackOfficeExternalLoginProviderOptions>();
@@ -54,7 +54,7 @@ namespace Umbraco.Community.AzureSSO
 											displayName: profile.DisplayName ?? "Microsoft Entra ID",
 											cookieScheme: $"{profile.Name}Cookies",
 											openIdConnectScheme: SchemeForBackOffice(profile.Name, backOfficeAuthenticationBuilder) ??
-											                     String.Empty)
+																					 String.Empty)
 										.EnableTokenAcquisitionToCallDownstreamApi(
 											options => CopyCredentials(options, profile.Credentials),
 											initialScopes)
@@ -76,7 +76,7 @@ namespace Umbraco.Community.AzureSSO
 			// if composer is enabled don't add
 			return disableComposer ? builder.AddMicrosoftAccountAuthenticationInternal() : builder;
 		}
-        
+
 		private static string? SchemeForBackOffice(string name, BackOfficeAuthenticationBuilder backOfficeAuthenticationBuilder)
 		{
 #if OLD_BACKOFFICE
@@ -110,15 +110,13 @@ namespace Umbraco.Community.AzureSSO
 		{
 			switch (tokenCacheType)
 			{
-				case TokenCacheType.InMemory:
-					builder.AddInMemoryTokenCaches();
-					break;
 				case TokenCacheType.Session:
 					builder.AddSessionTokenCaches();
 					break;
 				case TokenCacheType.Distributed:
 					builder.AddDistributedTokenCaches();
 					break;
+				case TokenCacheType.InMemory:
 				default:
 					builder.AddInMemoryTokenCaches();
 					break;

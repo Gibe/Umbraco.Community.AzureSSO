@@ -3,7 +3,6 @@ using System.Linq;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
-using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Security;
 
 using Umbraco.Community.AzureSSO.Settings;
