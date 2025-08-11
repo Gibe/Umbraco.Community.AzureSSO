@@ -7,6 +7,8 @@ using Microsoft.Identity.Web;
 using Umbraco.Cms.Core.DependencyInjection;
 using Umbraco.Community.AzureSSO.Settings;
 using Umbraco.Extensions;
+using System.Linq;
+
 
 #if NEW_BACKOFFICE
 using Umbraco.Cms.Api.Management.Security;
@@ -26,8 +28,17 @@ namespace Umbraco.Community.AzureSSO
 			builder.Config.Bind(AzureSSOConfiguration.AzureSsoSectionName, azureSsoConfiguration);
 			builder.Services.AddSingleton<AzureSSOConfiguration>(conf => azureSsoConfiguration);
 
+
 			var settings = new AzureSsoSettings(azureSsoConfiguration);
 			builder.Services.AddSingleton<AzureSsoSettings>(conf => settings);
+
+			if (settings.Profiles.All(x => !x.Enabled))
+			{
+				// if no profiles are enabled, we don't need to do anything
+				return builder;
+			}
+
+
 			builder.Services.ConfigureOptions<MicrosoftAccountBackOfficeExternalLoginProviderOptions>();
 
 #if NEW_BACKOFFICE
