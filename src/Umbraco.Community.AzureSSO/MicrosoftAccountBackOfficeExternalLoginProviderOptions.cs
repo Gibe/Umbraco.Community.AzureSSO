@@ -7,6 +7,8 @@ using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Security;
 
 using Umbraco.Community.AzureSSO.Settings;
+using Microsoft.Extensions.Logging;
+
 #if NEW_BACKOFFICE
 using Umbraco.Cms.Api.Management.Security;
 #endif
@@ -17,7 +19,8 @@ using Umbraco.Cms.Web.BackOffice.Security;
 
 namespace Umbraco.Community.AzureSSO
 {
-	public class MicrosoftAccountBackOfficeExternalLoginProviderOptions(AzureSsoSettings settings)
+	public class MicrosoftAccountBackOfficeExternalLoginProviderOptions(AzureSsoSettings settings,
+		ILogger<MicrosoftAccountBackOfficeExternalLoginProviderOptions> logger)
 		: IConfigureNamedOptions<BackOfficeExternalLoginProviderOptions>
 	{
 		public const string SchemeName = "MicrosoftAccount";
@@ -116,6 +119,15 @@ namespace Umbraco.Community.AzureSSO
 			foreach (var group in settings.DefaultGroups)
 			{
 				user.AddRole(group);
+			}
+
+			if (settings.LogUnmappedRolesAsWarning)
+			{
+				var unmappedGroups = loginInfo.Principal.Claims.Where(c => !settings.GroupLookup.ContainsKey(c.Value) && c.Value.Contains("\\")).Select(c => c.Value).ToList();
+				if (unmappedGroups.Any())
+				{
+					logger.LogWarning("The following groups were not mapped to Umbraco roles: {Groups}", string.Join(", ", unmappedGroups));
+				}
 			}
 		}
 
