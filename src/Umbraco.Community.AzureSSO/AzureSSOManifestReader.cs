@@ -60,7 +60,7 @@ namespace Umbraco.Community.AzureSSO
 						["meta"] = meta
 					};
 
-					extensions.Add(extension);	
+					extensions.Add(extension);
 				}
 
 				var icons = new JsonObject
