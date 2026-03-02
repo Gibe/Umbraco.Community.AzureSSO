@@ -33,7 +33,7 @@ namespace Umbraco.Community.AzureSSO.Settings
 		public bool DenyLocalLogin => configuration.DenyLocalLogin ?? false;
 		public TokenCacheType TokenCacheType => configuration.TokenCacheType;
 		public bool AutoRedirectLoginToExternalProvider => configuration.AutoRedirectLoginToExternalProvider ?? false;
-		public AzureSsoCredentialSettings Credentials => new AzureSsoCredentialSettings(configuration.Credentials);
+		public AzureSsoCredentialSettings Credentials => new AzureSsoCredentialSettings(configuration.Credentials ?? new AzureSSOCredentials());
 	}
 
 	public class AzureSsoCredentialSettings(AzureSSOCredentials credentials)
