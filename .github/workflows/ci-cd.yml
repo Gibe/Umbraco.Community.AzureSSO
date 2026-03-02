@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   build_and_test:
-    name: Build & Test
+    name: Build
     runs-on: ubuntu-latest
 
     defaults:
@@ -26,6 +26,9 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: "10.0.x"
+
+      - name: Check formatting
+        run: dotnet format --verify-no-changes
 
       - name: Restore
         run: dotnet restore

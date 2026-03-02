@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Umbraco.Cms.Core.HealthChecks;
 
@@ -24,10 +23,12 @@ namespace Umbraco.Community.AzureSSO.HealthChecks
 			return GetStatuses();
 		}
 #else
+#pragma warning disable CS0672 // Member 'AzureSSOHealthCheck.GetStatus()' overrides obsolete member 'HealthCheck.GetStatus()'. Add the Obsolete attribute to 'AzureSSOHealthCheck.GetStatus()'
 		public override async Task<IEnumerable<HealthCheckStatus>> GetStatus()
 		{
 			return GetStatuses();
 		}
+#pragma warning restore CS0672 // Member 'AzureSSOHealthCheck.GetStatus()' overrides obsolete member 'HealthCheck.GetStatus()'. Add the Obsolete attribute to 'AzureSSOHealthCheck.GetStatus()'
 #endif
 
 		private List<HealthCheckStatus> GetStatuses()

@@ -4,7 +4,6 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Umbraco.Cms.Core.Security;
-
 using Umbraco.Community.AzureSSO.Settings;
 using Microsoft.Extensions.Logging;
 
@@ -26,7 +25,7 @@ namespace Umbraco.Community.AzureSSO
 
 		public void Configure(string? name, BackOfficeExternalLoginProviderOptions options)
 		{
-			
+
 			var profile = settings.Profiles
 				.FirstOrDefault(x => x.Name == name);
 			if (profile == null)
@@ -40,8 +39,10 @@ namespace Umbraco.Community.AzureSSO
 		public void Configure(BackOfficeExternalLoginProviderOptions options, AzureSsoProfileSettings profileSettings)
 		{
 #if OLD_BACKOFFICE
+#pragma warning disable CS0618 // Type or member is obsolete
 			options.ButtonStyle = profileSettings.ButtonStyle;
 			options.Icon = profileSettings.Icon;
+#pragma warning restore CS0618 // Type or member is obsolete
 #endif
 			options.AutoLinkOptions = new ExternalSignInAutoLinkOptions(
 					// must be true for auto-linking to be enabled
@@ -93,7 +94,7 @@ namespace Umbraco.Community.AzureSSO
 			};
 
 			// Optionally you can disable the ability for users
-			// to login with a username/password. If this is set
+			// to log in with a username/password. If this is set
 			// to true, it will disable username/password login
 			// even if there are other external login providers installed.
 			options.DenyLocalLogin = profileSettings.DenyLocalLogin;

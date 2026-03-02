@@ -18,7 +18,7 @@ namespace Umbraco.Community.AzureSSO
 		public Dictionary<string, string> GroupBindings { get; set; } = new();
 
 		public bool? SetGroupsOnLogin { get; set; }
-    
+
 		public bool? LogUnmappedRolesAsWarning { get; set; }
 
 		public string[]? DefaultGroups { get; set; }
@@ -42,21 +42,21 @@ namespace Umbraco.Community.AzureSSO
 			// TODO : Make this give or log specific feedback before we do anything like prevent booting if misconfigured
 			//        and to make it more useful for the HealthCheck
 			return (Profiles?.Length > 0 && AllValuesEmpty() && AllProfilesUnique() && AllProfilesHaveName()) ||
-			       (!(Profiles?.Length > 0) && Credentials != null && Credentials.IsValid());
+						 (!(Profiles?.Length > 0) && Credentials != null && Credentials.IsValid());
 		}
 
 		public bool AllValuesEmpty()
 		{
 			return string.IsNullOrEmpty(Name) &&
-			       string.IsNullOrEmpty(DisplayName) &&
-			       string.IsNullOrEmpty(ButtonStyle) &&
-			       string.IsNullOrEmpty(Icon) &&
-			       !GroupBindings.Any() &&
-			       SetGroupsOnLogin == null &&
-			       (DefaultGroups == null || !DefaultGroups.Any()) &&
-			       DenyLocalLogin == null &&
-			       AutoRedirectLoginToExternalProvider == null &&
-			       Credentials == null;
+						 string.IsNullOrEmpty(DisplayName) &&
+						 string.IsNullOrEmpty(ButtonStyle) &&
+						 string.IsNullOrEmpty(Icon) &&
+						 !GroupBindings.Any() &&
+						 SetGroupsOnLogin == null &&
+						 (DefaultGroups == null || !DefaultGroups.Any()) &&
+						 DenyLocalLogin == null &&
+						 AutoRedirectLoginToExternalProvider == null &&
+						 Credentials == null;
 		}
 
 		public bool AllProfilesHaveName()
@@ -67,10 +67,10 @@ namespace Umbraco.Community.AzureSSO
 		public bool AllProfilesUnique()
 		{
 			return Profiles != null &&
-				     Profiles.Select(x => x.Name).Distinct().Count() == Profiles.Count() &&
-			       Profiles.Select(x => x.Credentials?.CallbackPath).Distinct().Count() == Profiles.Count() &&
-			       Profiles.Select(x => x.Credentials?.SignedOutCallbackPath).Distinct().Count() == Profiles.Count() &&
-			       Profiles.Select(x => x.DisplayName).Distinct().Count() == Profiles.Count();
+						 Profiles.Select(x => x.Name).Distinct().Count() == Profiles.Count() &&
+						 Profiles.Select(x => x.Credentials?.CallbackPath).Distinct().Count() == Profiles.Count() &&
+						 Profiles.Select(x => x.Credentials?.SignedOutCallbackPath).Distinct().Count() == Profiles.Count() &&
+						 Profiles.Select(x => x.DisplayName).Distinct().Count() == Profiles.Count();
 		}
 	}
 
@@ -87,12 +87,12 @@ namespace Umbraco.Community.AzureSSO
 		public bool IsValid()
 		{
 			return !string.IsNullOrEmpty(Instance) &&
-			       !string.IsNullOrEmpty(Domain) &&
-			       !string.IsNullOrEmpty(TenantId) &&
-			       !string.IsNullOrEmpty(ClientId) &&
-			       !string.IsNullOrEmpty(ClientSecret) &&
-			       !string.IsNullOrEmpty(CallbackPath) &&
-			       !string.IsNullOrEmpty(SignedOutCallbackPath);
+						 !string.IsNullOrEmpty(Domain) &&
+						 !string.IsNullOrEmpty(TenantId) &&
+						 !string.IsNullOrEmpty(ClientId) &&
+						 !string.IsNullOrEmpty(ClientSecret) &&
+						 !string.IsNullOrEmpty(CallbackPath) &&
+						 !string.IsNullOrEmpty(SignedOutCallbackPath);
 		}
 	}
 }
