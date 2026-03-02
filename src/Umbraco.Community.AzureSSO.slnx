@@ -1,0 +1,13 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="../.github/workflows/build.yml" />
+    <File Path="../EntraIDSetup.md" />
+    <File Path="../LICENSE" />
+    <File Path="../README-uptov12.md" />
+    <File Path="../README-v13.md" />
+    <File Path="../README-v15plus.md" />
+    <File Path="../README.md" />
+    <File Path="../umbraco-marketplace.json" />
+  </Folder>
+  <Project Path="Umbraco.Community.AzureSSO/Umbraco.Community.AzureSSO.csproj" />
+</Solution>
