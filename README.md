@@ -23,11 +23,12 @@ Select the instructions for your Umbraco version
 If you'd like to disable the composer and configure it yourself you can add DisableComposer to the settings and set it's value to true
 
 i.e.
-
+```
 "AzureSSO": {
 	/// All the other configuration
 	"DisableComposer": true
 }
+```
 
 In which case you'll need to add AddMicrosoftAccountAuthentication() to your ConfigureServices function
 
