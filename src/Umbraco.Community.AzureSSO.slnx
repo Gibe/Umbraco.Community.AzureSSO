@@ -8,7 +8,6 @@
     <File Path="../README-v15plus.md" />
     <File Path="../README.md" />
     <File Path="../umbraco-marketplace.json" />
-    <File Path="../version.txt" />
   </Folder>
   <Project Path="Umbraco.Community.AzureSSO/Umbraco.Community.AzureSSO.csproj" />
 </Solution>
