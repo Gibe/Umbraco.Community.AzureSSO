@@ -42,7 +42,7 @@ jobs:
 
     - name: Pack NuGet package
       if: startsWith(github.ref, 'refs/tags/')
-      run: dotnet pack src/Umbraco.Community.AzureSSO.slnx --configuration Release --output nuget /p:PackageVersion=${{ env.PACKAGE_VERSION }}
+      run: dotnet pack src/Umbraco.Community.AzureSSO.slnx --configuration Release --output ${{ github.workspace }}/nuget /p:PackageVersion=${{ env.PACKAGE_VERSION }}
 
     - name: Upload NuGet package
       if: startsWith(github.ref, 'refs/tags/')
