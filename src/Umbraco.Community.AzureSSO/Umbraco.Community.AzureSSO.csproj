@@ -19,6 +19,7 @@
 		<RepositoryType>git</RepositoryType>
 		<LangVersion>12.0</LangVersion>
 		<StaticWebAssetBasePath>/</StaticWebAssetBasePath>
+		<NoWarn>NU1903, NU1902</NoWarn>
 	</PropertyGroup>
 	<ItemGroup>
 		<None Include="..\..\AzureSSO.jpg">
