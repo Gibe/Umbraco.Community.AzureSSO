@@ -60,18 +60,18 @@ namespace Umbraco.Community.AzureSSO
 						["meta"] = meta
 					};
 
-					extensions.Add(extension);
-					
-					var icons = new JsonObject
-					{
-						["type"] = "icons",
-						["alias"] = "Umbraco.Community.AzureSSO.Icons",
-						["name"] = "AzureSSO Icons",
-						["js"] = "/App_Plugins/AzureSSO/Icons/icons.js",
-					};
-
-					extensions.Add(icons);
+					extensions.Add(extension);	
 				}
+
+				var icons = new JsonObject
+				{
+					["type"] = "icons",
+					["alias"] = "Umbraco.Community.AzureSSO.Icons",
+					["name"] = "AzureSSO Icons",
+					["js"] = "/App_Plugins/AzureSSO/Icons/icons.js",
+				};
+
+				extensions.Add(icons);
 
 				return new List<PackageManifest>() {
 					new PackageManifest()
