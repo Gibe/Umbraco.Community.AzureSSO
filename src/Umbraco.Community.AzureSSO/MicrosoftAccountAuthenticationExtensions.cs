@@ -108,40 +108,41 @@ namespace Umbraco.Community.AzureSSO
 			options.SignedOutCallbackPath = settings.SignedOutCallbackPath;
 			options.CallbackPath = settings.CallbackPath;
 
-			if (settings.UseWorkloadIdentity)
+			switch (settings.CredentialType)
 			{
-				var tokenFilePath = Environment.GetEnvironmentVariable("AZURE_FEDERATED_TOKEN_FILE");
-				if (string.IsNullOrEmpty(tokenFilePath))
-				{
-					throw new InvalidOperationException(
-						"UseWorkloadIdentity is enabled but the AZURE_FEDERATED_TOKEN_FILE environment variable is not set. " +
-						"Ensure the Azure Workload Identity webhook is configured and the pod has the azure.workload.identity/use: \"true\" label.");
-				}
+				case CredentialType.WorkloadIdentity:
+					var tokenFilePath = Environment.GetEnvironmentVariable("AZURE_FEDERATED_TOKEN_FILE");
+					if (string.IsNullOrEmpty(tokenFilePath))
+					{
+						throw new InvalidOperationException(
+							"CredentialType is WorkloadIdentity but the AZURE_FEDERATED_TOKEN_FILE environment variable is not set. " +
+							"Ensure the Azure Workload Identity webhook is configured and the pod has the azure.workload.identity/use: \"true\" label.");
+					}
 
-				options.ClientCredentials = new[]
-				{
-					new CredentialDescription
+					options.ClientCredentials = new[]
 					{
-						SourceType = CredentialSource.SignedAssertionFilePath,
-						SignedAssertionFileDiskPath = tokenFilePath,
-					}
-				};
-			}
-			else if (settings.UseManagedIdentity)
-			{
-				options.ClientCredentials = new[]
-				{
-					new CredentialDescription
+						new CredentialDescription
+						{
+							SourceType = CredentialSource.SignedAssertionFilePath,
+							SignedAssertionFileDiskPath = tokenFilePath,
+						}
+					};
+					break;
+				case CredentialType.ManagedIdentity:
+					options.ClientCredentials = new[]
 					{
-						SourceType = CredentialSource.SignedAssertionFromManagedIdentity,
-						// ManagedIdentityClientId is the user-assigned managed identity client ID; leave empty for system-assigned.
-						ManagedIdentityClientId = settings.ManagedIdentityClientId,
-					}
-				};
-			}
-			else
-			{
-				options.ClientSecret = settings.ClientSecret;
+						new CredentialDescription
+						{
+							SourceType = CredentialSource.SignedAssertionFromManagedIdentity,
+							// ManagedIdentityClientId is the user-assigned managed identity client ID; leave empty for system-assigned.
+							ManagedIdentityClientId = settings.ManagedIdentityClientId,
+						}
+					};
+					break;
+				case CredentialType.Secret:
+				default:
+					options.ClientSecret = settings.ClientSecret;
+					break;
 			}
 		}
 
@@ -151,7 +152,7 @@ namespace Umbraco.Community.AzureSSO
 			options.TenantId = settings.TenantId;
 			options.ClientId = settings.ClientId;
 
-			if (!settings.UseWorkloadIdentity && !settings.UseManagedIdentity)
+			if (settings.CredentialType == CredentialType.Secret)
 			{
 				options.ClientSecret = settings.ClientSecret;
 			}

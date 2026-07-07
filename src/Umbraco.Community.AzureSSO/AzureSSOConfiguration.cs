@@ -86,52 +86,21 @@ namespace Umbraco.Community.AzureSSO
 		public string SignedOutCallbackPath { get; set; } = "";
 
 		/// <summary>
-		/// When true, uses Azure Managed Identity (system-assigned or user-assigned) instead of a client secret.
-		/// Cannot be combined with UseWorkloadIdentity.
-		/// When using a user-assigned managed identity, set ManagedIdentityClientId to the identity's client ID.
-		/// For system-assigned managed identity, ManagedIdentityClientId may be left empty.
+		/// Selects how the application authenticates to Entra ID.
+		/// Secret (default) uses ClientSecret.
+		/// ManagedIdentity uses Azure Managed Identity; for a user-assigned identity set ManagedIdentityClientId,
+		/// for system-assigned leave it empty.
+		/// WorkloadIdentity uses federated credentials (e.g. AKS); TenantId and ClientId must be provided explicitly.
 		/// </summary>
-		public bool UseManagedIdentity { get; set; } = false;
-
-		/// <summary>
-		/// When true, uses Azure Workload Identity (federated credentials) instead of a client secret.
-		/// Cannot be combined with UseManagedIdentity.
-		/// TenantId and ClientId must be provided explicitly in configuration.
-		/// </summary>
-		public bool UseWorkloadIdentity { get; set; } = false;
+		public CredentialType CredentialType { get; set; } = CredentialType.Secret;
 
 		public bool IsValid()
 		{
-			if (UseWorkloadIdentity && UseManagedIdentity)
-			{
-				return false;
-			}
-
-			if (UseWorkloadIdentity)
-			{
-				return !string.IsNullOrEmpty(Instance) &&
-							 !string.IsNullOrEmpty(Domain) &&
-							 !string.IsNullOrEmpty(TenantId) &&
-							 !string.IsNullOrEmpty(ClientId) &&
-							 !string.IsNullOrEmpty(CallbackPath) &&
-							 !string.IsNullOrEmpty(SignedOutCallbackPath);
-			}
-
-			if (UseManagedIdentity)
-			{
-				return !string.IsNullOrEmpty(Instance) &&
-							 !string.IsNullOrEmpty(Domain) &&
-							 !string.IsNullOrEmpty(TenantId) &&
-							 !string.IsNullOrEmpty(ClientId) &&
-							 !string.IsNullOrEmpty(CallbackPath) &&
-							 !string.IsNullOrEmpty(SignedOutCallbackPath);
-			}
-
 			return !string.IsNullOrEmpty(Instance) &&
 						 !string.IsNullOrEmpty(Domain) &&
 						 !string.IsNullOrEmpty(TenantId) &&
 						 !string.IsNullOrEmpty(ClientId) &&
-						 !string.IsNullOrEmpty(ClientSecret) &&
+						 (CredentialType != CredentialType.Secret || !string.IsNullOrEmpty(ClientSecret)) &&
 						 !string.IsNullOrEmpty(CallbackPath) &&
 						 !string.IsNullOrEmpty(SignedOutCallbackPath);
 		}
