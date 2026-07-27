@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Umbraco.Community.AzureSSO.EasyAuth;
 
 namespace Umbraco.Community.AzureSSO
 {
@@ -86,6 +87,13 @@ namespace Umbraco.Community.AzureSSO
 
 		public bool IsValid()
 		{
+			// When running behind Azure App Service Easy Auth, App Service performs the AAD handshake itself -
+			// only the callback paths (used as our own dispatch routes, not OIDC redirect URIs) are required.
+			if (EasyAuthDetection.IsEnabled)
+			{
+				return !string.IsNullOrEmpty(CallbackPath) && !string.IsNullOrEmpty(SignedOutCallbackPath);
+			}
+
 			return !string.IsNullOrEmpty(Instance) &&
 						 !string.IsNullOrEmpty(Domain) &&
 						 !string.IsNullOrEmpty(TenantId) &&
