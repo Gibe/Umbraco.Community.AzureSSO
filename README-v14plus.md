@@ -48,6 +48,7 @@ You can also customise the configuration by setting these settings:
 | DenyLocalLogin                        | Allow users to login via Umbraco's standard login                                            |
 | GroupBindings                         | The bindings for Entry ID group to Umbraco group                                             |
 | SetGroupsOnLogin                      | Whether or not to reset the users assigned groups on each login                              |
+| SetProfileImageOnLogin                | Fetch the user's Entra ID profile photo on each login and set it as their Umbraco avatar     |
 | TokenCacheType                        | Token Cache Type to use: InMemory, Session, Distributed (defaults to InMemory)               |
 | DefaultGroups                         | The groups to assign to users regardless of any Entry ID groups assigned (defaults to none)  |
 | LogUnmappedRolesAsWarning             | Log any roles in Entra ID that aren't mapped as warnings for debugging purposes              |
@@ -67,6 +68,10 @@ If you are having problems with NET BIOS group names, you can set the groups cla
 ![image](https://user-images.githubusercontent.com/1257752/235880241-4381fa6e-d72d-494e-bd3f-1ceaf8b4e71d.png)
 
 You can now use the guid format for the Group Id like: `"xxxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxx": "admin", "44a38651-xxxx-4c92-b1b6-51cf26ff9bab": "editor"`
+
+## Profile Photo
+
+Setting `SetProfileImageOnLogin` to `true` requests the `User.Read` Microsoft Graph scope and, on every login, fetches the user's photo from `https://graph.microsoft.com/v1.0/me/photo/$value` and sets it as their Umbraco avatar. This is opt-in and off by default, since it adds an extra Graph API call to every login and requests an additional scope. If the user has no photo set in Entra ID, or the Graph call fails for any reason, the login proceeds as normal and the failure is logged as a warning.
 
 # Advanced usage
 
