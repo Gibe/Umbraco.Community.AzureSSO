@@ -60,7 +60,8 @@ $LibraryProject = "src\Umbraco.Community.AzureSSO\Umbraco.Community.AzureSSO.csp
 if ((Test-Path $DemoDir) -and -not $Force) {
     Write-Host "Demo folder '$DemoDir' already exists. Use -Force to recreate." -ForegroundColor Yellow
     Write-Host "Or open the existing $SolutionName.slnx" -ForegroundColor Yellow
-    exit 0
+    Pop-Location
+    return
 }
 
 # Clean up existing demo if Force
