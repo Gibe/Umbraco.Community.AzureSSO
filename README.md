@@ -16,6 +16,26 @@ Select the instructions for your Umbraco version
 [v13](README-v13.md)
 [v15+](README-v15plus.md)
 
+## Local development
+
+To spin up a local Umbraco site for manually testing changes to this package, run one of the demo site scripts from the repo root:
+
+```
+./scripts/install-demo-site.ps1   # Windows/PowerShell
+./scripts/install-demo-site.sh    # macOS/Linux/bash
+```
+
+This scaffolds a new Umbraco site under `demo/`, references it against the `Umbraco.Community.AzureSSO` project in `src/` (so your local changes are picked up directly, no need to pack/publish), and creates `Umbraco.Community.AzureSSO.local.slnx` combining both projects for convenience. The `AzureSSO` configuration section is added to the demo site's `appsettings.Development.json` disabled by default, with placeholder `REPLACE_WITH_*` values.
+
+To use it:
+
+1. Follow [EntraIDSetup.md](EntraIDSetup.md) to create an App Registration in Azure
+2. Fill in the `AzureSSO.Credentials` values in `demo/Umbraco.Community.AzureSSO.DemoSite/appsettings.Development.json`
+3. Set `AzureSSO.Enabled` to `true`
+4. Open `Umbraco.Community.AzureSSO.local.slnx`, build, and run the `Umbraco.Community.AzureSSO.DemoSite` project
+
+Both scripts accept `-Force`/`--force` to recreate the demo site from scratch, and `-SkipTemplateInstall`/`--skip-template-install` to skip reinstalling the Umbraco templates on repeat runs. The demo site and local solution file are gitignored.
+
 ## Advanced usage
 
 ### Manually composing
