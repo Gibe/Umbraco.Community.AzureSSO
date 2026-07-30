@@ -16,6 +16,7 @@ namespace Umbraco.Community.AzureSSO.Settings
 
 			Profiles = configuration.Profiles.Select(x => new AzureSsoProfileSettings(x)).ToArray();
 		}
+
 		public AzureSsoProfileSettings[] Profiles { get; }
 	}
 
@@ -34,6 +35,7 @@ namespace Umbraco.Community.AzureSSO.Settings
 		public TokenCacheType TokenCacheType => configuration.TokenCacheType;
 		public bool AutoRedirectLoginToExternalProvider => configuration.AutoRedirectLoginToExternalProvider ?? false;
 		public AzureSsoCredentialSettings Credentials => new AzureSsoCredentialSettings(configuration.Credentials ?? new AzureSSOCredentials());
+		public Dictionary<string, CustomClaimMappingSettings> CustomClaimMappings => configuration.CustomClaimMappings?.ToDictionary(c => c.Key, c => new CustomClaimMappingSettings(c.Value)) ?? [];
 	}
 
 	public class AzureSsoCredentialSettings(AzureSSOCredentials credentials)
@@ -45,5 +47,11 @@ namespace Umbraco.Community.AzureSSO.Settings
 		public string ClientSecret => credentials.ClientSecret;
 		public string CallbackPath => credentials.CallbackPath;
 		public string SignedOutCallbackPath => credentials.SignedOutCallbackPath;
+	}
+
+	public class CustomClaimMappingSettings(CustomClaimMapping mapping)
+	{
+		public string UmbracoClaim => mapping.UmbracoClaim;
+		public string ExternalClaim => mapping.ExternalClaim;
 	}
 }

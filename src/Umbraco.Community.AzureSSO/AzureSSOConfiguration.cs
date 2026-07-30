@@ -37,6 +37,8 @@ namespace Umbraco.Community.AzureSSO
 
 		public bool DisableComposer { get; set; } = false;
 
+		public Dictionary<string, CustomClaimMapping>? CustomClaimMappings { get; set; }
+
 		public bool IsValid()
 		{
 			// TODO : Make this give or log specific feedback before we do anything like prevent booting if misconfigured
@@ -56,7 +58,8 @@ namespace Umbraco.Community.AzureSSO
 						 (DefaultGroups == null || !DefaultGroups.Any()) &&
 						 DenyLocalLogin == null &&
 						 AutoRedirectLoginToExternalProvider == null &&
-						 Credentials == null;
+						 Credentials == null
+						 && CustomClaimMappings == null;
 		}
 
 		public bool AllProfilesHaveName()
@@ -94,5 +97,11 @@ namespace Umbraco.Community.AzureSSO
 						 !string.IsNullOrEmpty(CallbackPath) &&
 						 !string.IsNullOrEmpty(SignedOutCallbackPath);
 		}
+	}
+
+	public class CustomClaimMapping
+	{
+		public string UmbracoClaim { get; set; } = string.Empty;
+		public string ExternalClaim { get; set; } = string.Empty;
 	}
 }

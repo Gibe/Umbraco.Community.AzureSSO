@@ -8,11 +8,14 @@ using Umbraco.Cms.Core.DependencyInjection;
 using Umbraco.Community.AzureSSO.Settings;
 using Umbraco.Extensions;
 using System.Linq;
-
+using System.Threading.Tasks;
+using System.Security.Claims;
 
 #if NEW_BACKOFFICE
+
 using Umbraco.Cms.Api.Management.Security;
 using Umbraco.Cms.Infrastructure.Manifest;
+
 #endif
 #if OLD_BACKOFFICE
 using Umbraco.Cms.Web.BackOffice.Security;
@@ -28,7 +31,6 @@ namespace Umbraco.Community.AzureSSO
 			builder.Config.Bind(AzureSSOConfiguration.AzureSsoSectionName, azureSsoConfiguration);
 			builder.Services.AddSingleton<AzureSSOConfiguration>(conf => azureSsoConfiguration);
 
-
 			var settings = new AzureSsoSettings(azureSsoConfiguration);
 			builder.Services.AddSingleton<AzureSsoSettings>(conf => settings);
 
@@ -37,7 +39,6 @@ namespace Umbraco.Community.AzureSSO
 				// if no profiles are enabled, we don't need to do anything
 				return builder;
 			}
-
 
 			builder.Services.ConfigureOptions<MicrosoftAccountBackOfficeExternalLoginProviderOptions>();
 
@@ -60,7 +61,16 @@ namespace Umbraco.Community.AzureSSO
 												CopyCredentials(options, profile.Credentials);
 												options.SignInScheme = SchemeForBackOffice(profile.Name, backOfficeAuthenticationBuilder);
 												options.Events = new OpenIdConnectEvents();
+												options.Events.OnTokenValidated = async context =>
+												{
+													if (context?.Principal == null)
+													{
+														return;
+													}
+													context.Principal = TransformClaims(context.Principal, profile);
 
+													await Task.FromResult(0);
+												};
 											},
 											displayName: profile.DisplayName ?? "Microsoft Entra ID",
 											cookieScheme: $"{profile.Name}Cookies",
@@ -95,7 +105,6 @@ namespace Umbraco.Community.AzureSSO
 #elif NEW_BACKOFFICE
 			return BackOfficeAuthenticationBuilder.SchemeForBackOffice(name);
 #endif
-
 		}
 
 		private static void CopyCredentials(MicrosoftIdentityOptions options, AzureSsoCredentialSettings settings)
@@ -124,9 +133,11 @@ namespace Umbraco.Community.AzureSSO
 				case TokenCacheType.Session:
 					builder.AddSessionTokenCaches();
 					break;
+
 				case TokenCacheType.Distributed:
 					builder.AddDistributedTokenCaches();
 					break;
+
 				case TokenCacheType.InMemory:
 				default:
 					builder.AddInMemoryTokenCaches();
@@ -136,7 +147,32 @@ namespace Umbraco.Community.AzureSSO
 			return builder;
 		}
 
+		private static ClaimsPrincipal TransformClaims(ClaimsPrincipal claimsPrincipal, AzureSsoProfileSettings settings)
+		{
+			if (claimsPrincipal.Identity is not ClaimsIdentity identity)
+			{
+				return claimsPrincipal;
+			}
+
+			var claimsToKeep = identity.Claims.ToList();
+			if (settings.CustomClaimMappings != null)
+			{
+				foreach (var customMapping in settings.CustomClaimMappings.Values)
+				{
+					var externalClaimValue = claimsToKeep.FirstOrDefault(x => x.Type == customMapping.ExternalClaim)?.Value;
+					if (!string.IsNullOrEmpty(externalClaimValue))
+					{
+						var currentClaim = claimsToKeep.FirstOrDefault(x => x.Type == customMapping.UmbracoClaim);
+						// Remove claim if it exists
+						if (currentClaim != null)
+						{
+							claimsToKeep.Remove(currentClaim);
+						}
+						claimsToKeep.Add(new Claim(customMapping.UmbracoClaim, externalClaimValue));
+					}
+				}
+			}
+			return new ClaimsPrincipal(new ClaimsIdentity(claimsToKeep, claimsPrincipal.Identity.AuthenticationType));
+		}
 	}
 }
-
-
