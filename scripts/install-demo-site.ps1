@@ -152,8 +152,9 @@ Write-Host ""
 Write-Host "Next steps:" -ForegroundColor Yellow
 Write-Host "  1. Follow EntraIDSetup.md to create an App Registration in Azure"
 Write-Host "  2. Fill in the AzureSSO.Credentials values in $DemoSiteDir\appsettings.Development.json"
-Write-Host "  3. Set AzureSSO.Enabled to true"
-Write-Host "  4. Open $SolutionName.slnx in your IDE, build, and run the $DemoSiteName project"
+Write-Host "  3. Configure any optional settings as needed in $DemoSiteDir\appsettings.Development.json"
+Write-Host "  4. Set AzureSSO.Enabled to true"
+Write-Host "  5. Open $SolutionName.slnx in your IDE, build, and run the $DemoSiteName project"
 Write-Host ""
 
 # Restore original directory
