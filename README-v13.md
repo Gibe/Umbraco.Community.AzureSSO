@@ -26,7 +26,7 @@ You'll need to configure the package by adding the following section to the root
     "DefaultGroups": [
 		  "editor"
 	  ],
-    "Icon": "icon-microsoft-fill"
+    "Icon": "icon-microsoft-fill",
     "ButtonStyle": "btn-microsoft",
     "LogUnmappedRolesAsWarning": false
 },
