@@ -5,6 +5,7 @@ using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Umbraco.Cms.Core.IO;
 using Umbraco.Cms.Core.Security;
@@ -25,9 +26,7 @@ namespace Umbraco.Community.AzureSSO
 {
 	public class MicrosoftAccountBackOfficeExternalLoginProviderOptions(AzureSsoSettings settings,
 		ILogger<MicrosoftAccountBackOfficeExternalLoginProviderOptions> logger,
-		IHttpClientFactory httpClientFactory,
-		IUserService userService,
-		MediaFileManager mediaFileManager)
+		IServiceProvider serviceProvider)
 		: IConfigureNamedOptions<BackOfficeExternalLoginProviderOptions>
 	{
 		public const string SchemeName = "MicrosoftAccount";
@@ -186,11 +185,14 @@ namespace Umbraco.Community.AzureSSO
 					return;
 				}
 
+				var userService = serviceProvider.GetRequiredService<IUserService>();
+
 				if (userService.GetByUsername(username) is not { } umbracoUser)
 				{
 					return;
 				}
 
+				var httpClientFactory = serviceProvider.GetRequiredService<IHttpClientFactory>();
 				using var httpClient = httpClientFactory.CreateClient();
 				httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 
@@ -206,6 +208,7 @@ namespace Umbraco.Community.AzureSSO
 
 				var avatarPath = $"UserAvatars/{$"{umbracoUser.Key}profile.jpg".GenerateHash<SHA1>()}.jpg";
 
+				var mediaFileManager = serviceProvider.GetRequiredService<MediaFileManager>();
 				using (var photoStream = response.Content.ReadAsStream())
 				{
 					mediaFileManager.FileSystem.AddFile(avatarPath, photoStream, true);
