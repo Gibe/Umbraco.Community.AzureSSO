@@ -6,8 +6,8 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.Identity.Web;
+using Microsoft.IdentityModel.JsonWebTokens;
 
 namespace Umbraco.Community.AzureSSO.EasyAuth
 {
