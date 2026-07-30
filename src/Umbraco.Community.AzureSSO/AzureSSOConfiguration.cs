@@ -82,6 +82,8 @@ namespace Umbraco.Community.AzureSSO
 		public string ClientId { get; set; } = "";
 		public string ManagedIdentityClientId { get; set; } = "";
 		public string ClientSecret { get; set; } = "";
+		public string CertificateThumbprint { get; set; } = "";
+		public string CertificateStorePath { get; set; } = "";
 		public string CallbackPath { get; set; } = "";
 		public string SignedOutCallbackPath { get; set; } = "";
 
@@ -91,6 +93,8 @@ namespace Umbraco.Community.AzureSSO
 		/// ManagedIdentity uses Azure Managed Identity; for a user-assigned identity set ManagedIdentityClientId,
 		/// for system-assigned leave it empty.
 		/// WorkloadIdentity uses federated credentials (e.g. AKS); TenantId and ClientId must be provided explicitly.
+		/// Certificate uses a certificate from a local certificate store, identified by CertificateThumbprint
+		/// (and optionally CertificateStorePath, which defaults to "CurrentUser/My").
 		/// </summary>
 		public CredentialType CredentialType { get; set; } = CredentialType.Secret;
 
@@ -101,6 +105,7 @@ namespace Umbraco.Community.AzureSSO
 						 !string.IsNullOrEmpty(TenantId) &&
 						 !string.IsNullOrEmpty(ClientId) &&
 						 (CredentialType != CredentialType.Secret || !string.IsNullOrEmpty(ClientSecret)) &&
+						 (CredentialType != CredentialType.Certificate || !string.IsNullOrEmpty(CertificateThumbprint)) &&
 						 !string.IsNullOrEmpty(CallbackPath) &&
 						 !string.IsNullOrEmpty(SignedOutCallbackPath);
 		}

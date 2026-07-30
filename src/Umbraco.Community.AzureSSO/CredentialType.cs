@@ -4,6 +4,7 @@ namespace Umbraco.Community.AzureSSO
 	{
 		Secret = 0,
 		ManagedIdentity = 1,
-		WorkloadIdentity = 2
+		WorkloadIdentity = 2,
+		Certificate = 3
 	}
 }
