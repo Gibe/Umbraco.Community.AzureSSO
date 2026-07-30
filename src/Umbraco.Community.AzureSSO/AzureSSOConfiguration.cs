@@ -19,6 +19,8 @@ namespace Umbraco.Community.AzureSSO
 
 		public bool? SetGroupsOnLogin { get; set; }
 
+		public bool? SetProfileImageOnLogin { get; set; }
+
 		public bool? LogUnmappedRolesAsWarning { get; set; }
 
 		public string[]? DefaultGroups { get; set; }
@@ -53,6 +55,7 @@ namespace Umbraco.Community.AzureSSO
 						 string.IsNullOrEmpty(Icon) &&
 						 !GroupBindings.Any() &&
 						 SetGroupsOnLogin == null &&
+						 SetProfileImageOnLogin == null &&
 						 (DefaultGroups == null || !DefaultGroups.Any()) &&
 						 DenyLocalLogin == null &&
 						 AutoRedirectLoginToExternalProvider == null &&

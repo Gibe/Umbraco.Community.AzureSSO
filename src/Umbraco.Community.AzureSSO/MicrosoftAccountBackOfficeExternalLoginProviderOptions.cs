@@ -1,10 +1,17 @@
 using System;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Umbraco.Cms.Core.IO;
 using Umbraco.Cms.Core.Security;
+using Umbraco.Cms.Core.Services;
 using Umbraco.Community.AzureSSO.Settings;
+using Umbraco.Extensions;
 using Microsoft.Extensions.Logging;
 
 #if NEW_BACKOFFICE
@@ -18,7 +25,8 @@ using Umbraco.Cms.Web.BackOffice.Security;
 namespace Umbraco.Community.AzureSSO
 {
 	public class MicrosoftAccountBackOfficeExternalLoginProviderOptions(AzureSsoSettings settings,
-		ILogger<MicrosoftAccountBackOfficeExternalLoginProviderOptions> logger)
+		ILogger<MicrosoftAccountBackOfficeExternalLoginProviderOptions> logger,
+		IServiceProvider serviceProvider)
 		: IConfigureNamedOptions<BackOfficeExternalLoginProviderOptions>
 	{
 		public const string SchemeName = "MicrosoftAccount";
@@ -78,11 +86,18 @@ namespace Umbraco.Community.AzureSSO
 				},
 				OnExternalLogin = (user, loginInfo) =>
 				{
+					var existingUsername = user.UserName;
+
 					if (profileSettings.SetGroupsOnLogin)
 					{
 						SetGroups(user, loginInfo, profileSettings);
 					}
 					SetName(user, loginInfo);
+
+					if (profileSettings.SetProfileImageOnLogin)
+					{
+						SetProfileImage(existingUsername, loginInfo);
+					}
 
 					if (user.Roles.Any())
 					{
@@ -151,6 +166,76 @@ namespace Umbraco.Community.AzureSSO
 			var displayName = claimsPrincipal.FindFirstValue("name");
 
 			return !string.IsNullOrWhiteSpace(displayName) ? displayName : defaultValue;
+		}
+
+		private void SetProfileImage(string? username, ExternalLoginInfo loginInfo)
+		{
+			if (string.IsNullOrEmpty(username))
+			{
+				return;
+			}
+
+			try
+			{
+				var accessToken = loginInfo.AuthenticationTokens?
+					.FirstOrDefault(t => t.Name == "access_token")?.Value;
+
+				if (string.IsNullOrEmpty(accessToken))
+				{
+					return;
+				}
+
+				var userService = serviceProvider.GetRequiredService<IUserService>();
+
+				if (userService.GetByUsername(username) is not { } umbracoUser)
+				{
+					return;
+				}
+
+				var httpClientFactory = serviceProvider.GetRequiredService<IHttpClientFactory>();
+				using var httpClient = httpClientFactory.CreateClient();
+				httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+
+				using var response = httpClient
+					.GetAsync("https://graph.microsoft.com/v1.0/me/photo/$value")
+					.GetAwaiter()
+					.GetResult();
+
+				if (!response.IsSuccessStatusCode)
+				{
+					if (response.StatusCode != System.Net.HttpStatusCode.NotFound)
+					{
+						logger.LogWarning(
+							"Failed to fetch the Entra ID profile picture for user {Username}. Microsoft Graph returned {StatusCode}",
+							username, response.StatusCode);
+					}
+
+					return;
+				}
+
+				var extension = response.Content.Headers.ContentType?.MediaType switch
+				{
+					"image/png" => "png",
+					"image/gif" => "gif",
+					"image/bmp" => "bmp",
+					_ => "jpg"
+				};
+
+				var avatarPath = $"UserAvatars/{$"{umbracoUser.Key}profile.{extension}".GenerateHash<SHA256>()}.{extension}";
+
+				var mediaFileManager = serviceProvider.GetRequiredService<MediaFileManager>();
+				using (var photoStream = response.Content.ReadAsStream())
+				{
+					mediaFileManager.FileSystem.AddFile(avatarPath, photoStream, true);
+				}
+
+				umbracoUser.Avatar = avatarPath;
+				userService.Save(umbracoUser);
+			}
+			catch (Exception ex)
+			{
+				logger.LogWarning(ex, "Failed to fetch and set the Entra ID profile picture as the avatar for user {Username}", username);
+			}
 		}
 
 		public void Configure(BackOfficeExternalLoginProviderOptions options)

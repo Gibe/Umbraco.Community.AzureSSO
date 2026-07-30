@@ -42,17 +42,25 @@ namespace Umbraco.Community.AzureSSO
 
 			builder.Services.ConfigureOptions<MicrosoftAccountBackOfficeExternalLoginProviderOptions>();
 
+			if (settings.Profiles.Any(x => x.Enabled && x.SetProfileImageOnLogin))
+			{
+				builder.Services.AddHttpClient();
+			}
+
 #if NEW_BACKOFFICE
 			builder.Services.AddSingleton<IPackageManifestReader, AzureSsoManifestReader>();
 #endif
 
-			var initialScopes = Array.Empty<string>();
 			builder.AddBackOfficeExternalLogins(logins =>
 				{
 					foreach (var profile in settings.Profiles)
 					{
 						if (profile.Enabled)
 						{
+							var initialScopes = profile.SetProfileImageOnLogin
+								? new[] { "User.Read" }
+								: Array.Empty<string>();
+
 							logins.AddBackOfficeLogin(
 								backOfficeAuthenticationBuilder =>
 								{
@@ -61,6 +69,7 @@ namespace Umbraco.Community.AzureSSO
 												CopyCredentials(options, profile.Credentials);
 												options.SignInScheme = SchemeForBackOffice(profile.Name, backOfficeAuthenticationBuilder);
 												options.Events = new OpenIdConnectEvents();
+												options.SaveTokens = profile.SetProfileImageOnLogin;
 
 											},
 											displayName: profile.DisplayName ?? "Microsoft Entra ID",
