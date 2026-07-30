@@ -80,9 +80,19 @@ namespace Umbraco.Community.AzureSSO
 		public string Domain { get; set; } = "";
 		public string TenantId { get; set; } = "";
 		public string ClientId { get; set; } = "";
+		public string ManagedIdentityClientId { get; set; } = "";
 		public string ClientSecret { get; set; } = "";
 		public string CallbackPath { get; set; } = "";
 		public string SignedOutCallbackPath { get; set; } = "";
+
+		/// <summary>
+		/// Selects how the application authenticates to Entra ID.
+		/// Secret (default) uses ClientSecret.
+		/// ManagedIdentity uses Azure Managed Identity; for a user-assigned identity set ManagedIdentityClientId,
+		/// for system-assigned leave it empty.
+		/// WorkloadIdentity uses federated credentials (e.g. AKS); TenantId and ClientId must be provided explicitly.
+		/// </summary>
+		public CredentialType CredentialType { get; set; } = CredentialType.Secret;
 
 		public bool IsValid()
 		{
@@ -90,7 +100,7 @@ namespace Umbraco.Community.AzureSSO
 						 !string.IsNullOrEmpty(Domain) &&
 						 !string.IsNullOrEmpty(TenantId) &&
 						 !string.IsNullOrEmpty(ClientId) &&
-						 !string.IsNullOrEmpty(ClientSecret) &&
+						 (CredentialType != CredentialType.Secret || !string.IsNullOrEmpty(ClientSecret)) &&
 						 !string.IsNullOrEmpty(CallbackPath) &&
 						 !string.IsNullOrEmpty(SignedOutCallbackPath);
 		}
