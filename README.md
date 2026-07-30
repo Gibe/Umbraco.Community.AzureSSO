@@ -54,7 +54,7 @@ In which case you'll need to add AddMicrosoftAccountAuthentication() to your Con
 
 ### Managed Identity / Workload Identity
 
-By default the package authenticates against the App Registration using a client secret. Alternatively you can authenticate using an Azure Managed Identity or a Workload Identity (federated credentials, e.g. on AKS), which removes the need to store a client secret, by setting `CredentialType` in the `Credentials` section:
+By default the package authenticates against the App Registration using a client secret. Alternatively you can authenticate using an Azure Managed Identity, a Workload Identity (federated credentials, e.g. on AKS) or a certificate, which removes the need to store a client secret, by setting `CredentialType` in the `Credentials` section:
 
 ```
 "AzureSSO": {
@@ -73,10 +73,12 @@ By default the package authenticates against the App Registration using a client
 
 | Setting                 | Description                                                                                                                                                              |
 | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| CredentialType          | How the application authenticates to Entra ID: `Secret` (the default, uses ClientSecret), `ManagedIdentity` or `WorkloadIdentity`                                        |
+| CredentialType          | How the application authenticates to Entra ID: `Secret` (the default, uses ClientSecret), `ManagedIdentity`, `WorkloadIdentity` or `Certificate`                          |
 | ManagedIdentityClientId | Only used when CredentialType is `ManagedIdentity`. Set to the client ID of a user-assigned managed identity, or leave empty to use the system-assigned managed identity |
+| CertificateThumbprint   | Only used when CredentialType is `Certificate`. The thumbprint of the certificate to use                                                                                 |
+| CertificateStorePath    | Only used when CredentialType is `Certificate`. The certificate store to load the certificate from, in `StoreLocation/StoreName` format. Defaults to `CurrentUser/My`    |
 
-When `CredentialType` is `ManagedIdentity` or `WorkloadIdentity`, `ClientSecret` is not required and is ignored.
+When `CredentialType` is `ManagedIdentity`, `WorkloadIdentity` or `Certificate`, `ClientSecret` is not required and is ignored.
 
 #### Managed Identity
 
@@ -85,6 +87,10 @@ The managed identity is used as a federated identity credential for the App Regi
 #### Workload Identity
 
 Workload identity authenticates using the federated token file issued by the Azure Workload Identity webhook. The `AZURE_FEDERATED_TOKEN_FILE` environment variable must be set — on AKS this means the workload identity webhook is enabled and the pod has the `azure.workload.identity/use: "true"` label. The App Registration needs a federated credential trusting the Kubernetes service account, and `TenantId` and `ClientId` must be set explicitly in the configuration. If the environment variable is missing the site will throw an error on startup.
+
+#### Certificate
+
+The certificate must be uploaded to the App Registration (Certificates & secrets) and installed in a certificate store the application can read, identified by `CertificateThumbprint`. `CertificateStorePath` selects which store to load it from (e.g. `CurrentUser/My` or `LocalMachine/My`) and defaults to `CurrentUser/My` if not set.
 
 ### Debugging
 

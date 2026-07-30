@@ -139,6 +139,17 @@ namespace Umbraco.Community.AzureSSO
 						}
 					};
 					break;
+				case CredentialType.Certificate:
+					options.ClientCredentials = new[]
+					{
+						new CredentialDescription
+						{
+							SourceType = CredentialSource.StoreWithThumbprint,
+							CertificateStorePath = string.IsNullOrEmpty(settings.CertificateStorePath) ? "CurrentUser/My" : settings.CertificateStorePath,
+							CertificateThumbprint = settings.CertificateThumbprint,
+						}
+					};
+					break;
 				case CredentialType.Secret:
 				default:
 					options.ClientSecret = settings.ClientSecret;

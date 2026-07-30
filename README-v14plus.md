@@ -37,7 +37,7 @@ You'll need to configure these settings based on the values in Azure:
 | Domain           | The value in Primary domain in the Microsoft Entra ID Directory Overview |
 | TenantId         | The value in Directory (tenant) ID on the App Registration Overview      |
 | ClientId         | The value in Application (Client) ID on the App Registration Overview    |
-| ClientSecret     | The client secret created for the App Registration (not required when using a [managed or workload identity](README.md#managed-identity--workload-identity)) |
+| ClientSecret     | The client secret created for the App Registration (not required when using a [managed identity, workload identity or certificate](README.md#managed-identity--workload-identity)) |
 
 You can also customise the configuration by setting these settings:
 
