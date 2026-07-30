@@ -6,6 +6,7 @@ using Microsoft.Identity.Client;
 using Microsoft.Identity.Abstractions;
 using Microsoft.Identity.Web;
 using Umbraco.Cms.Core.DependencyInjection;
+using Umbraco.Community.AzureSSO.EasyAuth;
 using Umbraco.Community.AzureSSO.Settings;
 using Umbraco.Extensions;
 using System.Linq;
@@ -46,6 +47,14 @@ namespace Umbraco.Community.AzureSSO
 			builder.Services.AddSingleton<IPackageManifestReader, AzureSsoManifestReader>();
 #endif
 
+			var easyAuthActive = EasyAuthDetection.IsEnabled;
+			if (easyAuthActive && settings.Profiles.Count(x => x.Enabled) > 1)
+			{
+				throw new InvalidOperationException(
+					"AzureSSO: Azure App Service Easy Auth was detected, but more than one AzureSSO profile is Enabled. " +
+					"Easy Auth is a single site-wide identity and cannot be split across multiple profiles/tenants - disable all but one profile.");
+			}
+
 			var initialScopes = Array.Empty<string>();
 			builder.AddBackOfficeExternalLogins(logins =>
 				{
@@ -56,6 +65,19 @@ namespace Umbraco.Community.AzureSSO
 							logins.AddBackOfficeLogin(
 								backOfficeAuthenticationBuilder =>
 								{
+									if (easyAuthActive)
+									{
+										backOfficeAuthenticationBuilder.AddRemoteScheme<EasyAuthAuthenticationOptions, EasyAuthAuthenticationHandler>(
+											SchemeForBackOffice(profile.Name, backOfficeAuthenticationBuilder) ?? String.Empty,
+											profile.DisplayName ?? "Microsoft Entra ID",
+											options =>
+											{
+												options.CallbackPath = profile.Credentials.CallbackPath;
+												options.SignedOutCallbackPath = profile.Credentials.SignedOutCallbackPath;
+											});
+										return;
+									}
+
 									backOfficeAuthenticationBuilder.AddMicrosoftIdentityWebApp(options =>
 											{
 												CopyCredentials(options, profile.Credentials);
