@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Identity.Client;
+using Microsoft.Identity.Abstractions;
 using Microsoft.Identity.Web;
 using Umbraco.Cms.Core.DependencyInjection;
 using Umbraco.Community.AzureSSO.Settings;
@@ -108,9 +109,56 @@ namespace Umbraco.Community.AzureSSO
 			options.Domain = settings.Domain;
 			options.TenantId = settings.TenantId;
 			options.ClientId = settings.ClientId;
-			options.ClientSecret = settings.ClientSecret;
 			options.SignedOutCallbackPath = settings.SignedOutCallbackPath;
 			options.CallbackPath = settings.CallbackPath;
+
+			switch (settings.CredentialType)
+			{
+				case CredentialType.WorkloadIdentity:
+					var tokenFilePath = Environment.GetEnvironmentVariable("AZURE_FEDERATED_TOKEN_FILE");
+					if (string.IsNullOrEmpty(tokenFilePath))
+					{
+						throw new InvalidOperationException(
+							"CredentialType is WorkloadIdentity but the AZURE_FEDERATED_TOKEN_FILE environment variable is not set. " +
+							"Ensure the Azure Workload Identity webhook is configured and the pod has the azure.workload.identity/use: \"true\" label.");
+					}
+
+					options.ClientCredentials = new[]
+					{
+						new CredentialDescription
+						{
+							SourceType = CredentialSource.SignedAssertionFilePath,
+							SignedAssertionFileDiskPath = tokenFilePath,
+						}
+					};
+					break;
+				case CredentialType.ManagedIdentity:
+					options.ClientCredentials = new[]
+					{
+						new CredentialDescription
+						{
+							SourceType = CredentialSource.SignedAssertionFromManagedIdentity,
+							// ManagedIdentityClientId is the user-assigned managed identity client ID; leave empty for system-assigned.
+							ManagedIdentityClientId = settings.ManagedIdentityClientId,
+						}
+					};
+					break;
+				case CredentialType.Certificate:
+					options.ClientCredentials = new[]
+					{
+						new CredentialDescription
+						{
+							SourceType = CredentialSource.StoreWithThumbprint,
+							CertificateStorePath = string.IsNullOrEmpty(settings.CertificateStorePath) ? "CurrentUser/My" : settings.CertificateStorePath,
+							CertificateThumbprint = settings.CertificateThumbprint,
+						}
+					};
+					break;
+				case CredentialType.Secret:
+				default:
+					options.ClientSecret = settings.ClientSecret;
+					break;
+			}
 		}
 
 		private static void CopyCredentials(ConfidentialClientApplicationOptions options, AzureSsoCredentialSettings settings)
@@ -118,7 +166,11 @@ namespace Umbraco.Community.AzureSSO
 			options.Instance = settings.Instance;
 			options.TenantId = settings.TenantId;
 			options.ClientId = settings.ClientId;
-			options.ClientSecret = settings.ClientSecret;
+
+			if (settings.CredentialType == CredentialType.Secret)
+			{
+				options.ClientSecret = settings.ClientSecret;
+			}
 		}
 
 		private static MicrosoftIdentityAppCallsWebApiAuthenticationBuilder AddTokenCaches(this MicrosoftIdentityAppCallsWebApiAuthenticationBuilder builder, TokenCacheType tokenCacheType)
