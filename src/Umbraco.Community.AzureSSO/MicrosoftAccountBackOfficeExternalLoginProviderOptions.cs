@@ -203,10 +203,25 @@ namespace Umbraco.Community.AzureSSO
 
 				if (!response.IsSuccessStatusCode)
 				{
+					if (response.StatusCode != System.Net.HttpStatusCode.NotFound)
+					{
+						logger.LogWarning(
+							"Failed to fetch the Entra ID profile picture for user {Username}. Microsoft Graph returned {StatusCode}",
+							username, response.StatusCode);
+					}
+
 					return;
 				}
 
-				var avatarPath = $"UserAvatars/{$"{umbracoUser.Key}profile.jpg".GenerateHash<SHA1>()}.jpg";
+				var extension = response.Content.Headers.ContentType?.MediaType switch
+				{
+					"image/png" => "png",
+					"image/gif" => "gif",
+					"image/bmp" => "bmp",
+					_ => "jpg"
+				};
+
+				var avatarPath = $"UserAvatars/{$"{umbracoUser.Key}profile.{extension}".GenerateHash<SHA256>()}.{extension}";
 
 				var mediaFileManager = serviceProvider.GetRequiredService<MediaFileManager>();
 				using (var photoStream = response.Content.ReadAsStream())

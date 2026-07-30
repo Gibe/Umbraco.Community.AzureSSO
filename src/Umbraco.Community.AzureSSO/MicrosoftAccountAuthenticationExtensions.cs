@@ -42,6 +42,11 @@ namespace Umbraco.Community.AzureSSO
 
 			builder.Services.ConfigureOptions<MicrosoftAccountBackOfficeExternalLoginProviderOptions>();
 
+			if (settings.Profiles.Any(x => x.Enabled && x.SetProfileImageOnLogin))
+			{
+				builder.Services.AddHttpClient();
+			}
+
 #if NEW_BACKOFFICE
 			builder.Services.AddSingleton<IPackageManifestReader, AzureSsoManifestReader>();
 #endif

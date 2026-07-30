@@ -77,7 +77,7 @@ You can bind one Entra ID group to multiple Umbraco groups by including a comma 
 
 ## Profile Photo
 
-Setting `SetProfileImageOnLogin` to `true` requests the `User.Read` Microsoft Graph scope and, on every login, fetches the user's photo from `https://graph.microsoft.com/v1.0/me/photo/$value` and sets it as their Umbraco avatar. This is opt-in and off by default, since it adds an extra Graph API call to every login and requests an additional scope. If the user has no photo set in Entra ID, or the Graph call fails for any reason, the login proceeds as normal and the failure is logged as a warning.
+Setting `SetProfileImageOnLogin` to `true` requests the `User.Read` Microsoft Graph scope and, on every login, fetches the user's photo from `https://graph.microsoft.com/v1.0/me/photo/$value` and sets it as their Umbraco avatar. This is opt-in and off by default, since it adds an extra Graph API call to every login and requests an additional scope. If the user has no photo set in Entra ID, the login proceeds as normal without setting an avatar. If the Graph call fails for any other reason, the login still proceeds as normal but the failure is logged as a warning.
 
 # Advanced usage
 
