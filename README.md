@@ -1,86 +1,98 @@
 # Umbraco.Community.AzureSSO
-Add Azure AD SSO to Umbraco v10-11 sites. This will allow you to automatically create Umbraco user accounts for users in your AD. This will then associate the Umbraco users with groups based on their AD group, and the configuration below.
 
-First you, or an Azure AD administration will need to create an App Registration in the Azure Portal which will be used to authenticate the site against Azure AD. Follow [these instructions to setup the new App Registration](AzureADSetup.md)
+Add Azure Entra ID SSO to Umbraco v10+ sites. This will allow you to automatically create Umbraco user accounts for users in your Microsoft Entra ID tenant. This will then associate the Umbraco users with groups based on their group, and the configuration below.
 
-To install
+First you, or an Entra ID administrator will need to create an App Registration in the Azure Portal which will be used to authenticate the site against Azure AD. Follow [these instructions to setup the new App Registration](EntraIDSetup.md)
+
+To install:
+
 `dotnet add package Umbraco.Community.AzureSSO`
 
-In startup.cs under ConfigureServices add:
+### Setup
 
-`.AddMicrosoftAccountAuthentication()`
+Select the instructions for your Umbraco version
 
-In the services.AddUmbraco bindings
+[v10-12](README-uptov12.md)
+[v13](README-v13.md)
+[v15+](README-v15plus.md)
 
-For example:
+## Local development
+
+To spin up a local Umbraco site for manually testing changes to this package, run one of the demo site scripts from the repo root:
+
 ```
-var builder = services.AddUmbraco(_env, _config)
-  .AddBackOffice()
-	.AddWebsite()
-	.AddComposers()
-	.AddMicrosoftAccountAuthentication()
-	.AddAzureBlobMediaFileSystem();
+./scripts/install-demo-site.ps1   # Windows/PowerShell
+./scripts/install-demo-site.sh    # macOS/Linux/bash
 ```
 
-To configure add the following section to the root of your appsettings.json file and customise as appropriate
+This scaffolds a new Umbraco site under `demo/`, references it against the `Umbraco.Community.AzureSSO` project in `src/` (so your local changes are picked up directly, no need to pack/publish), and creates `Umbraco.Community.AzureSSO.local.slnx` combining both projects for convenience. The `AzureSSO` configuration section is added to the demo site's `appsettings.Development.json` disabled by default, with placeholder `REPLACE_WITH_*` values.
+
+To use it:
+
+1. Follow [EntraIDSetup.md](EntraIDSetup.md) to create an App Registration in Azure
+2. Fill in the `AzureSSO.Credentials` values in `demo/Umbraco.Community.AzureSSO.DemoSite/appsettings.Development.json`
+3. Set `AzureSSO.Enabled` to `true`
+4. Open `Umbraco.Community.AzureSSO.local.slnx`, build, and run the `Umbraco.Community.AzureSSO.DemoSite` project
+
+Both scripts accept `-Force`/`--force` to recreate the demo site from scratch, and `-SkipTemplateInstall`/`--skip-template-install` to skip reinstalling the Umbraco templates on repeat runs. The demo site and local solution file are gitignored.
+
+## Advanced usage
+
+### Manually composing
+
+If you'd like to disable the composer and configure it yourself you can add DisableComposer to the settings and set it's value to true
+
+i.e.
 ```
 "AzureSSO": {
-    "Credentials": {
-        "Instance": "https://login.microsoftonline.com/",
-        "Domain": "<domain>",
-        "TenantId": "<tenantId>",
-        "ClientId": "<clientId>",
-        "CallbackPath": "/umbraco-microsoft-signin/",
-        "SignedOutCallbackPath ": "/umbraco-microsoft-signout/",
-        "ClientSecret": "<clientSecret>"
-    },
-    "DisplayName": "Azure AD",
-    "DenyLocalLogin": true,
-    "GroupBindings": {
-        "<AD group>": "<umbraco group>",
-        "<another AD group>": "<umbraco group>"
-    },
-    "SetGroupsOnLogin": true,
-    "DefaultGroups": [
-		"editors"
-	],
-    "Icon": "fa fa-lock",
-    "ButtonStyle": "btn-microsoft",
-},
+	/// All the other configuration
+	"DisableComposer": true
+}
 ```
 
-You'll need to configure these settings based on the values in Azure:
+In which case you'll need to add AddMicrosoftAccountAuthentication() to your ConfigureServices function
 
-| Setting          | Description                                                           |
-| ---------------- | -----------------------------------------------------                 |
-| Domain           | The value in Primary domain in the Azure Active Directory Overview    |
-| TenantId         | The value in Directory (tenant) ID on the app registration Overview   |
-| ClientId         | The value in Application (Client) ID on the app registration Overview |
-| ClientSecret     | The client secret created for the app registration                    |
+### Managed Identity / Workload Identity
 
-You can also customise the configuration by setting these settings:
+By default the package authenticates against the App Registration using a client secret. Alternatively you can authenticate using an Azure Managed Identity, a Workload Identity (federated credentials, e.g. on AKS) or a certificate, which removes the need to store a client secret, by setting `CredentialType` in the `Credentials` section:
 
-| Setting          | Description                                                                                  |
-| ---------------- | -------------------------------------------------------------------------------------------- |
-| DisplayName      | The display name for use on the login button                                                 |
-| Icon             | The class name for the icon to use                                                           |
-| ButtonStyle      | The class name for the button style                                                          |
-| DenyLocalLogin   | Allow users to login via Umbraco's standard login                                            |
-| GroupBindings    | The bindings for AD group to Umbraco group                                                   |
-| SetGroupsOnLogin | Whether or not to reset the users assigned groups on each login                              |
-| DefaultGroups    | The groups to assign to users regardless of any AD groups assigned (defaults to none)        |
+```
+"AzureSSO": {
+	"Credentials": {
+		"Instance": "https://login.microsoftonline.com/",
+		"Domain": "<domain>",
+		"TenantId": "<tenantId>",
+		"ClientId": "<clientId>",
+		"CallbackPath": "/umbraco-microsoft-signin/",
+		"SignedOutCallbackPath": "/umbraco-microsoft-signout/",
+		"CredentialType": "ManagedIdentity"
+	},
+	/// All the other configuration
+}
+```
 
-## ButtonStyle
+| Setting                 | Description                                                                                                                                                              |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| CredentialType          | How the application authenticates to Entra ID: `Secret` (the default, uses ClientSecret), `ManagedIdentity`, `WorkloadIdentity` or `Certificate`                          |
+| ManagedIdentityClientId | Only used when CredentialType is `ManagedIdentity`. Set to the client ID of a user-assigned managed identity, or leave empty to use the system-assigned managed identity |
+| CertificateThumbprint   | Only used when CredentialType is `Certificate`. The thumbprint of the certificate to use                                                                                 |
+| CertificateStorePath    | Only used when CredentialType is `Certificate`. The certificate store to load the certificate from, in `StoreLocation/StoreName` format. Defaults to `CurrentUser/My`    |
 
-The standard set is shown at https://lipis.github.io/bootstrap-social/
+When `CredentialType` is `ManagedIdentity`, `WorkloadIdentity` or `Certificate`, `ClientSecret` is not required and is ignored.
 
-## Group Bindings
+#### Managed Identity
 
-To bind these you'll need to specify the active directory group and then the matching Umbraco group.
+The managed identity is used as a federated identity credential for the App Registration, so the App Registration must be configured to trust it — see [Configure an application to trust a managed identity](https://learn.microsoft.com/en-us/entra/workload-id/workload-identity-federation-config-app-trust-managed-identity). For a user-assigned managed identity set `ManagedIdentityClientId` to the identity's client ID; for a system-assigned managed identity leave it empty.
 
-For example we use: `"GIBE\Producers" : "editors"` to bind everyone in the `GIBE\Producers` group to the Umbraco editors group. 
+#### Workload Identity
 
-Beware these will be reset on each login, so changing groups in umbraco will only take effect until the user next logs in. If a user is removed from an AD group they'll automatically be removed from the matching Umbraco group on next login.
+Workload identity authenticates using the federated token file issued by the Azure Workload Identity webhook. The `AZURE_FEDERATED_TOKEN_FILE` environment variable must be set — on AKS this means the workload identity webhook is enabled and the pod has the `azure.workload.identity/use: "true"` label. The App Registration needs a federated credential trusting the Kubernetes service account, and `TenantId` and `ClientId` must be set explicitly in the configuration. If the environment variable is missing the site will throw an error on startup.
 
+#### Certificate
 
+The certificate must be uploaded to the App Registration (Certificates & secrets) and installed in a certificate store the application can read, identified by `CertificateThumbprint`. `CertificateStorePath` selects which store to load it from (e.g. `CurrentUser/My` or `LocalMachine/My`) and defaults to `CurrentUser/My` if not set.
 
+### Debugging
+
+LogUnmappedRolesAsWarning
+When SetGroupsOnLogin is set to true, if LogUnmappedRolesAsWarning is also set to true this will log as warning for unmapped Entra ID groups, where the Entra ID name has a slash \ in it. By design it does not log everything to prevent logging of email addresses and so on.
