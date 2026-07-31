@@ -58,8 +58,8 @@ namespace Umbraco.Community.AzureSSO
 						 (DefaultGroups == null || !DefaultGroups.Any()) &&
 						 DenyLocalLogin == null &&
 						 AutoRedirectLoginToExternalProvider == null &&
-						 Credentials == null
-						 && CustomClaimMappings == null;
+						 Credentials == null &&
+						 CustomClaimMappings == null;
 		}
 
 		public bool AllProfilesHaveName()
