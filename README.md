@@ -16,6 +16,26 @@ Select the instructions for your Umbraco version
 [v13](README-v13.md)
 [v15+](README-v15plus.md)
 
+## Local development
+
+To spin up a local Umbraco site for manually testing changes to this package, run one of the demo site scripts from the repo root:
+
+```
+./scripts/install-demo-site.ps1   # Windows/PowerShell
+./scripts/install-demo-site.sh    # macOS/Linux/bash
+```
+
+This scaffolds a new Umbraco site under `demo/`, references it against the `Umbraco.Community.AzureSSO` project in `src/` (so your local changes are picked up directly, no need to pack/publish), and creates `Umbraco.Community.AzureSSO.local.slnx` combining both projects for convenience. The `AzureSSO` configuration section is added to the demo site's `appsettings.Development.json` disabled by default, with placeholder `REPLACE_WITH_*` values.
+
+To use it:
+
+1. Follow [EntraIDSetup.md](EntraIDSetup.md) to create an App Registration in Azure
+2. Fill in the `AzureSSO.Credentials` values in `demo/Umbraco.Community.AzureSSO.DemoSite/appsettings.Development.json`
+3. Set `AzureSSO.Enabled` to `true`
+4. Open `Umbraco.Community.AzureSSO.local.slnx`, build, and run the `Umbraco.Community.AzureSSO.DemoSite` project
+
+Both scripts accept `-Force`/`--force` to recreate the demo site from scratch, and `-SkipTemplateInstall`/`--skip-template-install` to skip reinstalling the Umbraco templates on repeat runs. The demo site and local solution file are gitignored.
+
 ## Advanced usage
 
 ### Manually composing
@@ -31,6 +51,46 @@ i.e.
 ```
 
 In which case you'll need to add AddMicrosoftAccountAuthentication() to your ConfigureServices function
+
+### Managed Identity / Workload Identity
+
+By default the package authenticates against the App Registration using a client secret. Alternatively you can authenticate using an Azure Managed Identity, a Workload Identity (federated credentials, e.g. on AKS) or a certificate, which removes the need to store a client secret, by setting `CredentialType` in the `Credentials` section:
+
+```
+"AzureSSO": {
+	"Credentials": {
+		"Instance": "https://login.microsoftonline.com/",
+		"Domain": "<domain>",
+		"TenantId": "<tenantId>",
+		"ClientId": "<clientId>",
+		"CallbackPath": "/umbraco-microsoft-signin/",
+		"SignedOutCallbackPath": "/umbraco-microsoft-signout/",
+		"CredentialType": "ManagedIdentity"
+	},
+	/// All the other configuration
+}
+```
+
+| Setting                 | Description                                                                                                                                                              |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| CredentialType          | How the application authenticates to Entra ID: `Secret` (the default, uses ClientSecret), `ManagedIdentity`, `WorkloadIdentity` or `Certificate`                          |
+| ManagedIdentityClientId | Only used when CredentialType is `ManagedIdentity`. Set to the client ID of a user-assigned managed identity, or leave empty to use the system-assigned managed identity |
+| CertificateThumbprint   | Only used when CredentialType is `Certificate`. The thumbprint of the certificate to use                                                                                 |
+| CertificateStorePath    | Only used when CredentialType is `Certificate`. The certificate store to load the certificate from, in `StoreLocation/StoreName` format. Defaults to `CurrentUser/My`    |
+
+When `CredentialType` is `ManagedIdentity`, `WorkloadIdentity` or `Certificate`, `ClientSecret` is not required and is ignored.
+
+#### Managed Identity
+
+The managed identity is used as a federated identity credential for the App Registration, so the App Registration must be configured to trust it — see [Configure an application to trust a managed identity](https://learn.microsoft.com/en-us/entra/workload-id/workload-identity-federation-config-app-trust-managed-identity). For a user-assigned managed identity set `ManagedIdentityClientId` to the identity's client ID; for a system-assigned managed identity leave it empty.
+
+#### Workload Identity
+
+Workload identity authenticates using the federated token file issued by the Azure Workload Identity webhook. The `AZURE_FEDERATED_TOKEN_FILE` environment variable must be set — on AKS this means the workload identity webhook is enabled and the pod has the `azure.workload.identity/use: "true"` label. The App Registration needs a federated credential trusting the Kubernetes service account, and `TenantId` and `ClientId` must be set explicitly in the configuration. If the environment variable is missing the site will throw an error on startup.
+
+#### Certificate
+
+The certificate must be uploaded to the App Registration (Certificates & secrets) and installed in a certificate store the application can read, identified by `CertificateThumbprint`. `CertificateStorePath` selects which store to load it from (e.g. `CurrentUser/My` or `LocalMachine/My`) and defaults to `CurrentUser/My` if not set.
 
 ### Debugging
 

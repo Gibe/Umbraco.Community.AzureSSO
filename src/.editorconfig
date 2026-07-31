@@ -6,7 +6,7 @@ root = true
 ###############################################################################
 # Set default behavior to:
 #   a UTF-8 encoding,
-#   Unix-style line endings,
+#   Windows-style line endings,
 #   a newline ending the file,
 #   2 space indentation, and
 #   trimming of trailing whitespace
@@ -80,7 +80,6 @@ dotnet_naming_rule.type_parameters_should_be_pascal_case_prefixed_with_t.symbols
 
 
 [*.cs]
-
 # Define the 'private_fields' symbol group:
 dotnet_naming_symbols.private_fields.applicable_kinds = field
 dotnet_naming_symbols.private_fields.applicable_accessibilities = private
