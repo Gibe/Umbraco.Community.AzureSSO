@@ -13,6 +13,7 @@ using System.Security.Claims;
 
 #if NEW_BACKOFFICE
 
+using OpenIddict.Abstractions;
 using Umbraco.Cms.Api.Management.Security;
 using Umbraco.Cms.Infrastructure.Manifest;
 
@@ -48,42 +49,44 @@ namespace Umbraco.Community.AzureSSO
 
 			var initialScopes = Array.Empty<string>();
 			builder.AddBackOfficeExternalLogins(logins =>
+			{
+				foreach (var profile in settings.Profiles)
 				{
-					foreach (var profile in settings.Profiles)
+					if (profile.Enabled)
 					{
-						if (profile.Enabled)
-						{
-							logins.AddBackOfficeLogin(
-								backOfficeAuthenticationBuilder =>
+						logins.AddBackOfficeLogin(
+							backOfficeAuthenticationBuilder =>
+							{
+								backOfficeAuthenticationBuilder.AddMicrosoftIdentityWebApp(options =>
 								{
-									backOfficeAuthenticationBuilder.AddMicrosoftIdentityWebApp(options =>
-											{
-												CopyCredentials(options, profile.Credentials);
-												options.SignInScheme = SchemeForBackOffice(profile.Name, backOfficeAuthenticationBuilder);
-												options.Events = new OpenIdConnectEvents();
-												options.Events.OnTokenValidated = async context =>
-												{
-													if (context?.Principal == null)
-													{
-														return;
-													}
-													context.Principal = TransformClaims(context.Principal, profile);
+									CopyCredentials(options, profile.Credentials);
+									options.SignInScheme = SchemeForBackOffice(profile.Name, backOfficeAuthenticationBuilder);
+									options.Events = new OpenIdConnectEvents();
+#if NEW_BACKOFFICE
+									options.Events.OnTokenValidated = async context =>
+									{
+										if (context?.Principal == null)
+										{
+											return;
+										}
+										TransformClaims(context.Principal, profile);
 
-													await Task.FromResult(0);
-												};
-											},
-											displayName: profile.DisplayName ?? "Microsoft Entra ID",
-											cookieScheme: $"{profile.Name}Cookies",
-											openIdConnectScheme: SchemeForBackOffice(profile.Name, backOfficeAuthenticationBuilder) ??
-																					 String.Empty)
-										.EnableTokenAcquisitionToCallDownstreamApi(
-											options => CopyCredentials(options, profile.Credentials),
-											initialScopes)
-										.AddTokenCaches(profile.TokenCacheType);
-								});
-						}
+										await Task.FromResult(0);
+									};
+#endif
+								},
+										displayName: profile.DisplayName ?? "Microsoft Entra ID",
+										cookieScheme: $"{profile.Name}Cookies",
+										openIdConnectScheme: SchemeForBackOffice(profile.Name, backOfficeAuthenticationBuilder) ??
+																				 String.Empty)
+									.EnableTokenAcquisitionToCallDownstreamApi(
+										options => CopyCredentials(options, profile.Credentials),
+										initialScopes)
+									.AddTokenCaches(profile.TokenCacheType);
+							});
 					}
 				}
+			}
 
 			);
 
@@ -147,32 +150,34 @@ namespace Umbraco.Community.AzureSSO
 			return builder;
 		}
 
-		private static ClaimsPrincipal TransformClaims(ClaimsPrincipal claimsPrincipal, AzureSsoProfileSettings settings)
+#if NEW_BACKOFFICE
+
+		private static void TransformClaims(ClaimsPrincipal claimsPrincipal, AzureSsoProfileSettings settings)
 		{
 			if (claimsPrincipal.Identity is not ClaimsIdentity identity)
 			{
-				return claimsPrincipal;
+				return;
 			}
 
-			var claimsToKeep = identity.Claims.ToList();
-			if (settings.CustomClaimMappings != null)
+			if (!settings.CustomClaimMappings.IsCollectionEmpty())
 			{
 				foreach (var customMapping in settings.CustomClaimMappings.Values)
 				{
-					var externalClaimValue = claimsToKeep.FirstOrDefault(x => x.Type == customMapping.ExternalClaim)?.Value;
+					var externalClaimValue = claimsPrincipal.Claims.FirstOrDefault(x => x.Type == customMapping.ExternalClaim)?.Value;
 					if (!string.IsNullOrEmpty(externalClaimValue))
 					{
-						var currentClaim = claimsToKeep.FirstOrDefault(x => x.Type == customMapping.UmbracoClaim);
-						// Remove claim if it exists
-						if (currentClaim != null)
+						var currentUmbracoClaim = claimsPrincipal.Claims.FirstOrDefault(x => x.Type == customMapping.UmbracoClaim);
+						// Remove claim if it already exists
+						if (currentUmbracoClaim != null)
 						{
-							claimsToKeep.Remove(currentClaim);
+							claimsPrincipal.RemoveClaims(customMapping.UmbracoClaim);
 						}
-						claimsToKeep.Add(new Claim(customMapping.UmbracoClaim, externalClaimValue));
+						claimsPrincipal.AddClaim(customMapping.UmbracoClaim, externalClaimValue);
 					}
 				}
 			}
-			return new ClaimsPrincipal(new ClaimsIdentity(claimsToKeep, claimsPrincipal.Identity.AuthenticationType));
 		}
+
+#endif
 	}
 }

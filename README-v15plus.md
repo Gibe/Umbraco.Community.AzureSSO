@@ -31,7 +31,7 @@ You'll need to configure the package by adding the following section to the root
     "CustomClaimMappings": {
 			"Email": {
 				"ExternalClaim": "preferred_username",
-				"UmbracoClaim": "email"
+				"UmbracoClaim": "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"
 			}
 		}
 },
@@ -120,7 +120,7 @@ This could be used for having one SSO option for agency users and another for cl
       "CustomClaimMappings": {
         "Email": {
           "ExternalClaim": "preferred_username",
-          "UmbracoClaim": "email"
+          "UmbracoClaim": "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"
         }
       }
     },
