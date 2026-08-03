@@ -10,10 +10,11 @@ using Umbraco.Community.AzureSSO.Settings;
 using Umbraco.Extensions;
 using System.Linq;
 
-
 #if NEW_BACKOFFICE
+
 using Umbraco.Cms.Api.Management.Security;
 using Umbraco.Cms.Infrastructure.Manifest;
+
 #endif
 #if OLD_BACKOFFICE
 using Umbraco.Cms.Web.BackOffice.Security;
@@ -29,7 +30,6 @@ namespace Umbraco.Community.AzureSSO
 			builder.Config.Bind(AzureSSOConfiguration.AzureSsoSectionName, azureSsoConfiguration);
 			builder.Services.AddSingleton<AzureSSOConfiguration>(conf => azureSsoConfiguration);
 
-
 			var settings = new AzureSsoSettings(azureSsoConfiguration);
 			builder.Services.AddSingleton<AzureSsoSettings>(conf => settings);
 
@@ -39,7 +39,6 @@ namespace Umbraco.Community.AzureSSO
 				return builder;
 			}
 
-
 			builder.Services.ConfigureOptions<MicrosoftAccountBackOfficeExternalLoginProviderOptions>();
 
 #if NEW_BACKOFFICE
@@ -48,33 +47,32 @@ namespace Umbraco.Community.AzureSSO
 
 			var initialScopes = Array.Empty<string>();
 			builder.AddBackOfficeExternalLogins(logins =>
+			{
+				foreach (var profile in settings.Profiles)
 				{
-					foreach (var profile in settings.Profiles)
+					if (profile.Enabled)
 					{
-						if (profile.Enabled)
-						{
-							logins.AddBackOfficeLogin(
-								backOfficeAuthenticationBuilder =>
+						logins.AddBackOfficeLogin(
+							backOfficeAuthenticationBuilder =>
+							{
+								backOfficeAuthenticationBuilder.AddMicrosoftIdentityWebApp(options =>
 								{
-									backOfficeAuthenticationBuilder.AddMicrosoftIdentityWebApp(options =>
-											{
-												CopyCredentials(options, profile.Credentials);
-												options.SignInScheme = SchemeForBackOffice(profile.Name, backOfficeAuthenticationBuilder);
-												options.Events = new OpenIdConnectEvents();
-
-											},
-											displayName: profile.DisplayName ?? "Microsoft Entra ID",
-											cookieScheme: $"{profile.Name}Cookies",
-											openIdConnectScheme: SchemeForBackOffice(profile.Name, backOfficeAuthenticationBuilder) ??
-																					 String.Empty)
-										.EnableTokenAcquisitionToCallDownstreamApi(
-											options => CopyCredentials(options, profile.Credentials),
-											initialScopes)
-										.AddTokenCaches(profile.TokenCacheType);
-								});
-						}
+									CopyCredentials(options, profile.Credentials);
+									options.SignInScheme = SchemeForBackOffice(profile.Name, backOfficeAuthenticationBuilder);
+									options.Events = new OpenIdConnectEvents();
+								},
+										displayName: profile.DisplayName ?? "Microsoft Entra ID",
+										cookieScheme: $"{profile.Name}Cookies",
+										openIdConnectScheme: SchemeForBackOffice(profile.Name, backOfficeAuthenticationBuilder) ??
+																				 String.Empty)
+									.EnableTokenAcquisitionToCallDownstreamApi(
+										options => CopyCredentials(options, profile.Credentials),
+										initialScopes)
+									.AddTokenCaches(profile.TokenCacheType);
+							});
 					}
 				}
+			}
 
 			);
 
@@ -96,7 +94,6 @@ namespace Umbraco.Community.AzureSSO
 #elif NEW_BACKOFFICE
 			return BackOfficeAuthenticationBuilder.SchemeForBackOffice(name);
 #endif
-
 		}
 
 		private static void CopyCredentials(MicrosoftIdentityOptions options, AzureSsoCredentialSettings settings)
@@ -128,6 +125,7 @@ namespace Umbraco.Community.AzureSSO
 						}
 					};
 					break;
+
 				case CredentialType.ManagedIdentity:
 					options.ClientCredentials = new[]
 					{
@@ -139,6 +137,7 @@ namespace Umbraco.Community.AzureSSO
 						}
 					};
 					break;
+
 				case CredentialType.Certificate:
 					options.ClientCredentials = new[]
 					{
@@ -150,6 +149,7 @@ namespace Umbraco.Community.AzureSSO
 						}
 					};
 					break;
+
 				case CredentialType.Secret:
 				default:
 					options.ClientSecret = settings.ClientSecret;
@@ -176,9 +176,11 @@ namespace Umbraco.Community.AzureSSO
 				case TokenCacheType.Session:
 					builder.AddSessionTokenCaches();
 					break;
+
 				case TokenCacheType.Distributed:
 					builder.AddDistributedTokenCaches();
 					break;
+
 				case TokenCacheType.InMemory:
 				default:
 					builder.AddInMemoryTokenCaches();
@@ -187,8 +189,5 @@ namespace Umbraco.Community.AzureSSO
 
 			return builder;
 		}
-
 	}
 }
-
-

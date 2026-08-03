@@ -73,7 +73,8 @@ namespace Umbraco.Community.AzureSSO
 					if (!autoLoginUser.IsApproved)
 					{
 						SetGroups(autoLoginUser, loginInfo, profileSettings);
-						SetName(autoLoginUser, loginInfo);
+						SetName(autoLoginUser, loginInfo, profileSettings);
+						SetEmail(autoLoginUser, loginInfo, profileSettings);
 					}
 				},
 				OnExternalLogin = (user, loginInfo) =>
@@ -82,7 +83,8 @@ namespace Umbraco.Community.AzureSSO
 					{
 						SetGroups(user, loginInfo, profileSettings);
 					}
-					SetName(user, loginInfo);
+					SetName(user, loginInfo, profileSettings);
+					SetEmail(user, loginInfo, profileSettings);
 
 					if (user.Roles.Any())
 					{
@@ -136,21 +138,37 @@ namespace Umbraco.Community.AzureSSO
 			}
 		}
 
-		private void SetName(BackOfficeIdentityUser user, ExternalLoginInfo loginInfo)
+		private void SetName(BackOfficeIdentityUser user, ExternalLoginInfo loginInfo, AzureSsoProfileSettings profileSettings)
 		{
 			if (loginInfo.Principal?.Identity?.Name != null)
 			{
-				user.Name = DisplayName(loginInfo.Principal, defaultValue: loginInfo.Principal.Identity.Name);
+				var displayName = FindClaimValue(loginInfo.Principal, profileSettings.NameClaimType, "name");
+				user.Name = !string.IsNullOrWhiteSpace(displayName) ? displayName : loginInfo.Principal.Identity.Name;
 				user.UserName = loginInfo.Principal.Identity.Name;
 			}
 			user.IsApproved = true;
 		}
 
-		private string DisplayName(ClaimsPrincipal claimsPrincipal, string defaultValue)
+		private void SetEmail(BackOfficeIdentityUser user, ExternalLoginInfo loginInfo, AzureSsoProfileSettings profileSettings)
 		{
-			var displayName = claimsPrincipal.FindFirstValue("name");
+			// Leave email untouched when unconfigured, so default Umbraco behaviour applies.
+			if (string.IsNullOrEmpty(profileSettings.EmailClaimType) || loginInfo.Principal == null)
+			{
+				return;
+			}
 
-			return !string.IsNullOrWhiteSpace(displayName) ? displayName : defaultValue;
+			var email = loginInfo.Principal.FindFirstValue(profileSettings.EmailClaimType);
+			if (!string.IsNullOrWhiteSpace(email))
+			{
+				user.Email = email;
+			}
+		}
+
+		private static string? FindClaimValue(ClaimsPrincipal claimsPrincipal, string? customClaimType, string defaultClaimType)
+		{
+			var value = string.IsNullOrEmpty(customClaimType) ? null : claimsPrincipal.FindFirstValue(customClaimType);
+
+			return value ?? claimsPrincipal.FindFirstValue(defaultClaimType);
 		}
 
 		public void Configure(BackOfficeExternalLoginProviderOptions options)

@@ -16,6 +16,7 @@ namespace Umbraco.Community.AzureSSO.Settings
 
 			Profiles = configuration.Profiles.Select(x => new AzureSsoProfileSettings(x)).ToArray();
 		}
+
 		public AzureSsoProfileSettings[] Profiles { get; }
 	}
 
@@ -34,6 +35,8 @@ namespace Umbraco.Community.AzureSSO.Settings
 		public TokenCacheType TokenCacheType => configuration.TokenCacheType;
 		public bool AutoRedirectLoginToExternalProvider => configuration.AutoRedirectLoginToExternalProvider ?? false;
 		public AzureSsoCredentialSettings Credentials => new AzureSsoCredentialSettings(configuration.Credentials ?? new AzureSSOCredentials());
+		public string? EmailClaimType => configuration.EmailClaimType;
+		public string? NameClaimType => configuration.NameClaimType;
 	}
 
 	public class AzureSsoCredentialSettings(AzureSSOCredentials credentials)

@@ -27,7 +27,9 @@ You'll need to configure the package by adding the following section to the root
 		  "editor"
 	  ],
     "LogUnmappedRolesAsWarning": false
-    "Icon": "icon-cloudy"
+    "Icon": "icon-cloudy",
+    "EmailClaimType": "preferred_username",
+    "NameClaimType": "preferred_username"
 },
 ```
 
@@ -53,12 +55,14 @@ You can also customise the configuration by setting these settings:
 | DefaultGroups                         | The groups to assign to users regardless of any Entry ID groups assigned (defaults to none)  |
 | LogUnmappedRolesAsWarning             | Log any roles in Entra ID that aren't mapped as warnings for debugging purposes              |
 | Enabled                               | Set to false to disable SSO                                                                  |
+| EmailClaimType                        | The claim type to use for the user's email when the default email claim isn't provided (e.g. "preferred_username") |
+| NameClaimType                         | The claim type to use for the user's display name when the default "name" claim isn't provided                     |
 
 ## Group Bindings
 
 To bind these you'll need to specify the Entra ID group and then the matching Umbraco group.
 
-For example we use: `"GIBE\Producers" : "editor"` to bind everyone in the `GIBE\Producers` group to the Umbraco editors group. 
+For example we use: `"GIBE\Producers" : "editor"` to bind everyone in the `GIBE\Producers` group to the Umbraco editors group.
 
 Beware these will be reset on each login, so changing groups in umbraco will only take effect until the user next logs in. If a user is removed from an AD group they'll automatically be removed from the matching Umbraco group on next login.
 
@@ -79,7 +83,7 @@ You can bind one Entra ID group to multiple Umbraco groups by including a comma 
 ## Multiple tenants
 
 If you'd like to use more than one tenant, or app registration then you can change the configuration to use profiles, see below.
-This could be used for having one SSO option for agency users and another for client users. 
+This could be used for having one SSO option for agency users and another for client users.
 
 ```
 "AzureSSO": {
@@ -110,6 +114,8 @@ This could be used for having one SSO option for agency users and another for cl
 	    ],
       "Icon": "icon-cloudy",
       "ButtonStyle": "btn-microsoft",
+      "EmailClaimType": "preferred_username",
+      "NameClaimType": "preferred_username"
     },
     {
       "Name": "AlternateAccount",
