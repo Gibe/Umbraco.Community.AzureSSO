@@ -55,11 +55,11 @@ namespace Umbraco.Community.AzureSSO
 						 string.IsNullOrEmpty(Icon) &&
 						 !GroupBindings.Any() &&
 						 SetGroupsOnLogin == null &&
-						 (DefaultGroups == null || !DefaultGroups.Any()) &&
+						 (DefaultGroups == null || DefaultGroups.Length == 0) &&
 						 DenyLocalLogin == null &&
 						 AutoRedirectLoginToExternalProvider == null &&
 						 Credentials == null &&
-						 CustomClaimMappings == null;
+						 (CustomClaimMappings == null || CustomClaimMappings.Count == 0);
 		}
 
 		public bool AllProfilesHaveName()
