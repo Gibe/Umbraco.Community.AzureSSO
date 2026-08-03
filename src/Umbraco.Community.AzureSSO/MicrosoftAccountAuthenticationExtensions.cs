@@ -9,12 +9,9 @@ using Umbraco.Cms.Core.DependencyInjection;
 using Umbraco.Community.AzureSSO.Settings;
 using Umbraco.Extensions;
 using System.Linq;
-using System.Threading.Tasks;
-using System.Security.Claims;
 
 #if NEW_BACKOFFICE
 
-using OpenIddict.Abstractions;
 using Umbraco.Cms.Api.Management.Security;
 using Umbraco.Cms.Infrastructure.Manifest;
 
@@ -63,18 +60,6 @@ namespace Umbraco.Community.AzureSSO
 									CopyCredentials(options, profile.Credentials);
 									options.SignInScheme = SchemeForBackOffice(profile.Name, backOfficeAuthenticationBuilder);
 									options.Events = new OpenIdConnectEvents();
-#if NEW_BACKOFFICE
-									options.Events.OnTokenValidated = async context =>
-									{
-										if (context?.Principal == null)
-										{
-											return;
-										}
-										TransformClaims(context.Principal, profile);
-
-										await Task.FromResult(0);
-									};
-#endif
 								},
 										displayName: profile.DisplayName ?? "Microsoft Entra ID",
 										cookieScheme: $"{profile.Name}Cookies",
@@ -204,26 +189,5 @@ namespace Umbraco.Community.AzureSSO
 
 			return builder;
 		}
-
-#if NEW_BACKOFFICE
-
-		private static void TransformClaims(ClaimsPrincipal claimsPrincipal, AzureSsoProfileSettings settings)
-		{
-			if (claimsPrincipal.Identity is not ClaimsIdentity || string.IsNullOrEmpty(settings.EmailClaimType))
-			{
-				return;
-			}
-
-			var emailClaimValue = claimsPrincipal.Claims.FirstOrDefault(x => x.Type == settings.EmailClaimType)?.Value;
-			if (string.IsNullOrEmpty(emailClaimValue))
-			{
-				return;
-			}
-
-			claimsPrincipal.RemoveClaims(ClaimTypes.Email);
-			claimsPrincipal.AddClaim(ClaimTypes.Email, emailClaimValue);
-		}
-
-#endif
 	}
 }
