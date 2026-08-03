@@ -140,6 +140,7 @@ namespace Umbraco.Community.AzureSSO
 						}
 					};
 					break;
+
 				case CredentialType.ManagedIdentity:
 					options.ClientCredentials = new[]
 					{
@@ -151,6 +152,7 @@ namespace Umbraco.Community.AzureSSO
 						}
 					};
 					break;
+
 				case CredentialType.Certificate:
 					options.ClientCredentials = new[]
 					{
@@ -162,6 +164,7 @@ namespace Umbraco.Community.AzureSSO
 						}
 					};
 					break;
+
 				case CredentialType.Secret:
 				default:
 					options.ClientSecret = settings.ClientSecret;
