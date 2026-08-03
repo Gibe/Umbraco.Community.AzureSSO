@@ -67,18 +67,16 @@ namespace Umbraco.Community.AzureSSO
 					allowManualLinking: false
 			)
 			{
-				// Optional callback
-				OnAutoLinking = (autoLoginUser, loginInfo) =>
-				{
-					if (!autoLoginUser.IsApproved)
-					{
-						SetGroups(autoLoginUser, loginInfo, profileSettings);
-						SetName(autoLoginUser, loginInfo);
-					}
-				},
+				// Group/name provisioning is handled entirely in OnExternalLogin, which Umbraco
+				// always calls immediately after OnAutoLinking for a newly linked user - doing it
+				// here too would run SetGroups/SetName twice on first login (see issue #15).
 				OnExternalLogin = (user, loginInfo) =>
 				{
-					if (profileSettings.SetGroupsOnLogin)
+					// Not yet approved means this is the first login for a newly auto-linked user,
+					// so groups must be assigned once here regardless of SetGroupsOnLogin.
+					var isNewUser = !user.IsApproved;
+
+					if (profileSettings.SetGroupsOnLogin || isNewUser)
 					{
 						SetGroups(user, loginInfo, profileSettings);
 					}
