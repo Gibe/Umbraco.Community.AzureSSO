@@ -28,7 +28,8 @@ You'll need to configure the package by adding the following section to the root
 	  ],
     "LogUnmappedRolesAsWarning": false
     "Icon": "icon-cloudy",
-    "EmailClaimType": "preferred_username"
+    "EmailClaimType": "preferred_username",
+    "NameClaimType": "preferred_username"
 },
 ```
 
@@ -55,6 +56,7 @@ You can also customise the configuration by setting these settings:
 | LogUnmappedRolesAsWarning             | Log any roles in Entra ID that aren't mapped as warnings for debugging purposes              |
 | Enabled                               | Set to false to disable SSO                                                                  |
 | EmailClaimType                        | The claim type to use for the user's email when the default email claim isn't provided (e.g. "preferred_username") |
+| NameClaimType                         | The claim type to use for the user's display name when the default "name" claim isn't provided                     |
 
 ## Group Bindings
 
@@ -112,7 +114,8 @@ This could be used for having one SSO option for agency users and another for cl
 	    ],
       "Icon": "icon-cloudy",
       "ButtonStyle": "btn-microsoft",
-      "EmailClaimType": "preferred_username"
+      "EmailClaimType": "preferred_username",
+      "NameClaimType": "preferred_username"
     },
     {
       "Name": "AlternateAccount",

@@ -73,7 +73,7 @@ namespace Umbraco.Community.AzureSSO
 					if (!autoLoginUser.IsApproved)
 					{
 						SetGroups(autoLoginUser, loginInfo, profileSettings);
-						SetName(autoLoginUser, loginInfo);
+						SetName(autoLoginUser, loginInfo, profileSettings);
 					}
 				},
 				OnExternalLogin = (user, loginInfo) =>
@@ -82,7 +82,7 @@ namespace Umbraco.Community.AzureSSO
 					{
 						SetGroups(user, loginInfo, profileSettings);
 					}
-					SetName(user, loginInfo);
+					SetName(user, loginInfo, profileSettings);
 
 					if (user.Roles.Any())
 					{
@@ -136,19 +136,20 @@ namespace Umbraco.Community.AzureSSO
 			}
 		}
 
-		private void SetName(BackOfficeIdentityUser user, ExternalLoginInfo loginInfo)
+		private void SetName(BackOfficeIdentityUser user, ExternalLoginInfo loginInfo, AzureSsoProfileSettings profileSettings)
 		{
 			if (loginInfo.Principal?.Identity?.Name != null)
 			{
-				user.Name = DisplayName(loginInfo.Principal, defaultValue: loginInfo.Principal.Identity.Name);
+				user.Name = DisplayName(loginInfo.Principal, profileSettings.NameClaimType, defaultValue: loginInfo.Principal.Identity.Name);
 				user.UserName = loginInfo.Principal.Identity.Name;
 			}
 			user.IsApproved = true;
 		}
 
-		private string DisplayName(ClaimsPrincipal claimsPrincipal, string defaultValue)
+		private string DisplayName(ClaimsPrincipal claimsPrincipal, string? nameClaimType, string defaultValue)
 		{
-			var displayName = claimsPrincipal.FindFirstValue("name");
+			var displayName = string.IsNullOrEmpty(nameClaimType) ? null : claimsPrincipal.FindFirstValue(nameClaimType);
+			displayName ??= claimsPrincipal.FindFirstValue("name");
 
 			return !string.IsNullOrWhiteSpace(displayName) ? displayName : defaultValue;
 		}

@@ -36,6 +36,7 @@ namespace Umbraco.Community.AzureSSO.Settings
 		public bool AutoRedirectLoginToExternalProvider => configuration.AutoRedirectLoginToExternalProvider ?? false;
 		public AzureSsoCredentialSettings Credentials => new AzureSsoCredentialSettings(configuration.Credentials ?? new AzureSSOCredentials());
 		public string? EmailClaimType => configuration.EmailClaimType;
+		public string? NameClaimType => configuration.NameClaimType;
 	}
 
 	public class AzureSsoCredentialSettings(AzureSSOCredentials credentials)

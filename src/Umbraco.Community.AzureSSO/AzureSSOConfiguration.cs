@@ -43,6 +43,12 @@ namespace Umbraco.Community.AzureSSO
 		/// </summary>
 		public string? EmailClaimType { get; set; }
 
+		/// <summary>
+		/// The external claim type to source the user's display name from, for providers that don't return
+		/// the standard "name" claim. Leave unset to use the default behaviour.
+		/// </summary>
+		public string? NameClaimType { get; set; }
+
 		public bool IsValid()
 		{
 			// TODO : Make this give or log specific feedback before we do anything like prevent booting if misconfigured
@@ -63,7 +69,8 @@ namespace Umbraco.Community.AzureSSO
 						 DenyLocalLogin == null &&
 						 AutoRedirectLoginToExternalProvider == null &&
 						 Credentials == null &&
-						 string.IsNullOrEmpty(EmailClaimType);
+						 string.IsNullOrEmpty(EmailClaimType) &&
+						 string.IsNullOrEmpty(NameClaimType);
 		}
 
 		public bool AllProfilesHaveName()
