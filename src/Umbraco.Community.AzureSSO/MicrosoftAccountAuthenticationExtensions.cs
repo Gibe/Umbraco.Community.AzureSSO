@@ -206,7 +206,7 @@ namespace Umbraco.Community.AzureSSO
 
 		private static void TransformClaims(ClaimsPrincipal claimsPrincipal, AzureSsoProfileSettings settings)
 		{
-			if (claimsPrincipal.Identity is not ClaimsIdentity identity)
+			if (claimsPrincipal.Identity is not ClaimsIdentity)
 			{
 				return;
 			}
