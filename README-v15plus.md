@@ -28,12 +28,7 @@ You'll need to configure the package by adding the following section to the root
 	  ],
     "LogUnmappedRolesAsWarning": false
     "Icon": "icon-cloudy",
-    "CustomClaimMappings": {
-			"Email": {
-				"ExternalClaim": "preferred_username",
-				"UmbracoClaim": "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"
-			}
-		}
+    "EmailClaimType": "preferred_username"
 },
 ```
 
@@ -59,7 +54,7 @@ You can also customise the configuration by setting these settings:
 | DefaultGroups                         | The groups to assign to users regardless of any Entry ID groups assigned (defaults to none)  |
 | LogUnmappedRolesAsWarning             | Log any roles in Entra ID that aren't mapped as warnings for debugging purposes              |
 | Enabled                               | Set to false to disable SSO                                                                  |
-| CustomClaimMappings                   | When e.g. email claim is not available it can be mapped from another claim                   |
+| EmailClaimType                        | The claim type to use for the user's email when the default email claim isn't provided (e.g. "preferred_username") |
 
 ## Group Bindings
 
@@ -117,12 +112,7 @@ This could be used for having one SSO option for agency users and another for cl
 	    ],
       "Icon": "icon-cloudy",
       "ButtonStyle": "btn-microsoft",
-      "CustomClaimMappings": {
-        "Email": {
-          "ExternalClaim": "preferred_username",
-          "UmbracoClaim": "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"
-        }
-      }
+      "EmailClaimType": "preferred_username"
     },
     {
       "Name": "AlternateAccount",

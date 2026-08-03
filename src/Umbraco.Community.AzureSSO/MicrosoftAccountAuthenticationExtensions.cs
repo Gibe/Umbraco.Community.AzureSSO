@@ -209,28 +209,19 @@ namespace Umbraco.Community.AzureSSO
 
 		private static void TransformClaims(ClaimsPrincipal claimsPrincipal, AzureSsoProfileSettings settings)
 		{
-			if (claimsPrincipal.Identity is not ClaimsIdentity)
+			if (claimsPrincipal.Identity is not ClaimsIdentity || string.IsNullOrEmpty(settings.EmailClaimType))
 			{
 				return;
 			}
 
-			if (!settings.CustomClaimMappings.IsCollectionEmpty())
+			var emailClaimValue = claimsPrincipal.Claims.FirstOrDefault(x => x.Type == settings.EmailClaimType)?.Value;
+			if (string.IsNullOrEmpty(emailClaimValue))
 			{
-				foreach (var customMapping in settings.CustomClaimMappings.Values)
-				{
-					var externalClaimValue = claimsPrincipal.Claims.FirstOrDefault(x => x.Type == customMapping.ExternalClaim)?.Value;
-					if (!string.IsNullOrEmpty(externalClaimValue))
-					{
-						var currentUmbracoClaim = claimsPrincipal.Claims.FirstOrDefault(x => x.Type == customMapping.UmbracoClaim);
-						// Remove claim if it already exists
-						if (currentUmbracoClaim != null)
-						{
-							claimsPrincipal.RemoveClaims(customMapping.UmbracoClaim);
-						}
-						claimsPrincipal.AddClaim(customMapping.UmbracoClaim, externalClaimValue);
-					}
-				}
+				return;
 			}
+
+			claimsPrincipal.RemoveClaims(ClaimTypes.Email);
+			claimsPrincipal.AddClaim(ClaimTypes.Email, emailClaimValue);
 		}
 
 #endif

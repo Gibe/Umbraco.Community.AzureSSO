@@ -37,7 +37,11 @@ namespace Umbraco.Community.AzureSSO
 
 		public bool DisableComposer { get; set; } = false;
 
-		public Dictionary<string, CustomClaimMapping>? CustomClaimMappings { get; set; }
+		/// <summary>
+		/// The external claim type to source the user's email from, for providers that don't return
+		/// the standard email claim (e.g. "preferred_username"). Leave unset to use the default behaviour.
+		/// </summary>
+		public string? EmailClaimType { get; set; }
 
 		public bool IsValid()
 		{
@@ -59,7 +63,7 @@ namespace Umbraco.Community.AzureSSO
 						 DenyLocalLogin == null &&
 						 AutoRedirectLoginToExternalProvider == null &&
 						 Credentials == null &&
-						 (CustomClaimMappings == null || CustomClaimMappings.Count == 0);
+						 string.IsNullOrEmpty(EmailClaimType);
 		}
 
 		public bool AllProfilesHaveName()
@@ -112,11 +116,5 @@ namespace Umbraco.Community.AzureSSO
 						 !string.IsNullOrEmpty(CallbackPath) &&
 						 !string.IsNullOrEmpty(SignedOutCallbackPath);
 		}
-	}
-
-	public class CustomClaimMapping
-	{
-		public string UmbracoClaim { get; set; } = string.Empty;
-		public string ExternalClaim { get; set; } = string.Empty;
 	}
 }
