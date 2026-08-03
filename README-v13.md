@@ -28,7 +28,9 @@ You'll need to configure the package by adding the following section to the root
 	  ],
     "Icon": "icon-microsoft-fill",
     "ButtonStyle": "btn-microsoft",
-    "LogUnmappedRolesAsWarning": false
+    "LogUnmappedRolesAsWarning": false,
+    "EmailClaimType": "preferred_username",
+    "NameClaimType": "preferred_username"
 },
 ```
 
@@ -56,6 +58,8 @@ You can also customise the configuration by setting these settings:
 | DefaultGroups                         | The groups to assign to users regardless of any Entry ID groups assigned (defaults to none)  |
 | LogUnmappedRolesAsWarning             | Log any roles in Entra ID that aren't mapped as warnings for debugging purposes              |
 | Enabled                               | Set to false to disable SSO                                                                  |
+| EmailClaimType                        | The claim type to use for the user's email when the default email claim isn't provided (e.g. "preferred_username") |
+| NameClaimType                         | The claim type to use for the user's display name when the default "name" claim isn't provided                     |
 
 ## ButtonStyle
 
@@ -117,6 +121,8 @@ This could be used for having one SSO option for agency users and another for cl
 	    ],
       "Icon": "fa fa-lock",
       "ButtonStyle": "btn-microsoft",
+      "EmailClaimType": "preferred_username",
+      "NameClaimType": "preferred_username"
     },
     {
       "Name": "AlternateAccount",
