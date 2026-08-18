@@ -9,6 +9,12 @@ using Umbraco.Cms.Core.DependencyInjection;
 using Umbraco.Community.AzureSSO.Settings;
 using Umbraco.Extensions;
 using System.Linq;
+using System.Threading.Tasks;
+using System.Security.Claims;
+
+
+
+
 
 #if NEW_BACKOFFICE
 
@@ -59,7 +65,19 @@ namespace Umbraco.Community.AzureSSO
 								{
 									CopyCredentials(options, profile.Credentials);
 									options.SignInScheme = SchemeForBackOffice(profile.Name, backOfficeAuthenticationBuilder);
-									options.Events = new OpenIdConnectEvents();
+									options.Events = new OpenIdConnectEvents()
+									{
+										OnTokenValidated = async context =>
+										{
+											if (context?.Principal == null || string.IsNullOrEmpty(profile.EmailClaimType))
+											{
+												return;
+											}
+											context.Principal = AddMissingEmailClaim(context.Principal, profile.EmailClaimType);
+
+											await Task.FromResult(0);
+										}
+									};
 								},
 										displayName: profile.DisplayName ?? "Microsoft Entra ID",
 										cookieScheme: $"{profile.Name}Cookies",
@@ -94,6 +112,31 @@ namespace Umbraco.Community.AzureSSO
 #elif NEW_BACKOFFICE
 			return BackOfficeAuthenticationBuilder.SchemeForBackOffice(name);
 #endif
+		}
+
+		private static ClaimsPrincipal AddMissingEmailClaim(ClaimsPrincipal claimsPrincipal, string emailSetting)
+		{
+			const string emailClaim = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress";
+
+			if (claimsPrincipal.Identity is not ClaimsIdentity identity)
+			{
+				return claimsPrincipal;
+			}
+
+			var externalClaimValue = claimsPrincipal.Claims.FirstOrDefault(x => x.Type == emailSetting)?.Value;
+			if (string.IsNullOrEmpty(externalClaimValue))
+			{
+				return claimsPrincipal;
+			}
+
+			var currentClaim = claimsPrincipal.Claims.FirstOrDefault(x => x.Type == emailClaim);
+			if (currentClaim != null)
+			{
+				return claimsPrincipal;
+			}
+
+			claimsPrincipal.AddIdentity(new ClaimsIdentity(new System.Collections.Generic.List<Claim>() { new Claim(emailClaim, externalClaimValue) }, claimsPrincipal.Identity.AuthenticationType));
+			return claimsPrincipal;
 		}
 
 		private static void CopyCredentials(MicrosoftIdentityOptions options, AzureSsoCredentialSettings settings)
